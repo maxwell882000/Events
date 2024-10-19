@@ -27,7 +27,7 @@ builder.Services.AddCors(options =>
         builder =>
         {
             builder
-                .WithOrigins("http://localhost:5173", "https://sportia.uz")
+                .WithOrigins("http://localhost:5173", "https://sportia.uz","https://www.sportia.uz")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
