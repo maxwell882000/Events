@@ -6,5 +6,4 @@ riderModule.iml
 #wwwroot/
 *.uxml
 *.xml
-*.svg
 *.user
