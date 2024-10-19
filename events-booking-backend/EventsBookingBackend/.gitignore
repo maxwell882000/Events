@@ -3,7 +3,7 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
-wwwroot/
+#wwwroot/
 *.uxml
 *.xml
 *.svg
