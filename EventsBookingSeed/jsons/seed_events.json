@@ -1,0 +1,258 @@
+[
+  {
+    "name": "Ташгрэс поле",
+    "categoryId": "48c112b1-70f5-4270-8f75-98c74bc48d96",
+    "previewImage": {
+      "path": "media/preview.png"
+    },
+    "images": [
+      {
+        "id": 1,
+        "path": "media/preview.png"
+      }
+    ],
+    "building": {
+      "address": "микрорайон ТашГРЭС, 37",
+      "latLong": {
+        "latitude": 41.353098,
+        "longitude": 69.336008
+      },
+      "workHours": [
+        {
+          "id": 1,
+          "day": 1,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 2,
+          "day": 2,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 3,
+          "day": 3,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 4,
+          "day": 4,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 5,
+          "day": 5,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 6,
+          "day": 6,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 7,
+          "day": 0,
+          "fromHour": 10,
+          "toHour": 23
+        }
+      ]
+    }
+  },
+  {
+    "name": "225 школа поле",
+    "categoryId": "48c112b1-70f5-4270-8f75-98c74bc48d96",
+    "previewImage": {
+      "path": "media/preview.png"
+    },
+    "images": [
+      {
+        "id": 2,
+        "path": "media/preview.png"
+      }
+    ],
+    "building": {
+      "address": "улица Каландар, 5",
+      "latLong": {
+        "latitude": 41.331663,
+        "longitude": 69.328025
+      },
+      "workHours": [
+        {
+          "id": 8,
+          "day": 1,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 9,
+          "day": 2,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 10,
+          "day": 3,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 11,
+          "day": 4,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 12,
+          "day": 5,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 13,
+          "day": 6,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 14,
+          "day": 0,
+          "fromHour": 10,
+          "toHour": 23
+        }
+      ]
+    }
+  },
+  {
+    "name": "МВЭС поле",
+    "categoryId": "48c112b1-70f5-4270-8f75-98c74bc48d96",
+    "previewImage": {
+      "path": "media/preview.png"
+    },
+    "images": [
+      {
+        "id": 3,
+        "path": "media/preview.png"
+      }
+    ],
+    "building": {
+      "address": "ул. Мирзо Улугбека, 8А",
+      "latLong": {
+        "latitude": 41.332619,
+        "longitude": 69.329982
+      },
+      "workHours": [
+        {
+          "id": 15,
+          "day": 1,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 16,
+          "day": 2,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 17,
+          "day": 3,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 18,
+          "day": 4,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 19,
+          "day": 5,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 20,
+          "day": 6,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 21,
+          "day": 0,
+          "fromHour": 10,
+          "toHour": 23
+        }
+      ]
+    }
+  },
+  {
+    "name": "Эко парк поле",
+    "categoryId": "48c112b1-70f5-4270-8f75-98c74bc48d96",
+    "previewImage": {
+      "path": "media/preview.png"
+    },
+    "images": [
+      {
+        "id": 4,
+        "path": "media/preview.png"
+      }
+    ],
+    "building": {
+      "address": "Ташкентский центральный экопарк имени Захириддина Мухаммада Бабура",
+      "latLong": {
+        "latitude": 41.309570,
+        "longitude": 69.295300
+      },
+      "workHours": [
+        {
+          "id": 22,
+          "day": 1,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 23,
+          "day": 2,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 24,
+          "day": 3,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 25,
+          "day": 4,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 26,
+          "day": 5,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 27,
+          "day": 6,
+          "fromHour": 10,
+          "toHour": 23
+        },
+        {
+          "id": 28,
+          "day": 0,
+          "fromHour": 10,
+          "toHour": 23
+        }
+      ]
+    }
+  }
+]

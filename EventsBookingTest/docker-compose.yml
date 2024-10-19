@@ -1,0 +1,93 @@
+﻿version: '3.7'
+
+services:
+  traefik:
+    image: traefik:v2.8
+    container_name: traefik
+    command:
+      - "--api.insecure=true"  # Enable the Traefik dashboard (optional)
+      - "--providers.docker=true"  # Enable Docker provider
+      - "--entrypoints.web.address=:80"  # Define HTTP entrypoint
+      - "--entrypoints.websecure.address=:443"  # Define HTTPS entrypoint
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"  # Use HTTP challenge
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"  # Specify HTTP entrypoint for challenge
+      - "--certificatesresolvers.myresolver.acme.email=shaxa882@gmail.com"  # Email for Let's Encrypt
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"  # Storage for certificates
+    ports:
+      - "80:80"   # HTTP port
+      - "443:443" # HTTPS port
+    volumes:
+      - certs:/letsencrypt  # Persistent storage for Let's Encrypt certificates
+      - /var/run/docker.sock:/var/run/docker.sock  # For Traefik to access Docker events
+    networks:
+      - sportia-network
+
+  postgres:
+    image: postgres:13  # Adjust the PostgreSQL version if needed
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: yourpassword
+      POSTGRES_DB: events_booking
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # Persist data between container runs
+    networks:
+      - sportia-network
+    ports:
+      - "5432:5432"  # Expose PostgreSQL port
+
+  eventsbookingseed:
+    image: eventsbookingseed
+    build:
+      context: ../
+      dockerfile: ./EventsBookingSeed/Dockerfile
+    environment:
+      - Database__Postgresql__ConnectionString=Host=postgres;Port=5432;Username=postgres;Password=yourpassword;Database=events_booking;Pooling=true;
+    depends_on:
+      - postgres
+    networks:
+      - sportia-network
+
+  eventsbookingjob:
+    build:
+      context: ../
+      dockerfile: ./EventsBookingJob/Dockerfile
+    environment:
+      - Database__Postgresql__ConnectionString=Host=postgres;Port=5432;Username=postgres;Password=yourpassword;Database=events_booking;Pooling=true;
+    depends_on:
+      - postgres
+    networks:
+      - sportia-network
+
+  eventsbookingbackend:
+    build:
+      context: ./../events-booking-backend/EventsBookingBackend/
+      dockerfile: Dockerfile
+    environment:
+      - Database__Postgresql__ConnectionString=Host=postgres;Port=5432;Username=postgres;Password=yourpassword;Database=events_booking;Pooling=true;
+      - FileOption__StoragePath=media/
+      - PaymeOption__Login=media/
+      - PaymeOption__Password=media/
+      - HostOption__BaseUrl=https://api.sportia.uz/
+    networks:
+      - sportia-network
+    volumes:
+      - ./../events-booking-backend/EventsBookingBackend/wwwroot:/app/wwwroot
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.eventsbookingbackend.rule=Host(`api.sportia.uz`)"
+      - "traefik.http.routers.eventsbookingbackend.entrypoints=websecure"
+      - "traefik.http.routers.eventsbookingbackend.tls.certresolver=myresolver"  # Use the ACME resolver
+      - "traefik.http.services.eventsbookingbackend.loadbalancer.server.port=8080"  # Specify the internal port of the backend service
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:
+  certs:
+
+networks:
+  sportia-network:
+    driver: bridge
+
+

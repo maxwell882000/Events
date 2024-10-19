@@ -1,0 +1,48 @@
+[
+  {
+    "icon": {
+      "path": "media/all.svg"
+    },
+    "name": "Все",
+    "order": 1,
+    "bgColor": "#9E77ED1F",
+    "isDefault": true
+  },
+  {
+    "id": "48c112b1-70f5-4270-8f75-98c74bc48d96",
+    "icon": {
+      "path": "media/football.svg"
+    },
+    "order": 2,
+    "name": "Футбол",
+    "bgColor": "#12B76A1F",
+    "isDefault": false
+  },
+  {
+    "icon": {
+      "path": "media/basketball.svg"
+    },
+    "order": 3,
+    "name": "Баскетбол",
+    "bgColor": "#F790091F",
+    "isDefault": false
+  },
+  {
+    "icon": {
+      "path": "media/tennis.svg"
+    },
+    "order": 4,
+    "name": "Теннис",
+    "bgColor": "#F63D681F",
+    "isDefault": false
+  },
+  {
+    "icon": {
+      "path": "media/ping-pong.svg"
+    },
+    "order": 5,
+    "name": "Пинг понг",
+    "bgColor": "#0BA5EC1F",
+    "isDefault": false
+  }
+]
