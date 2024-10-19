@@ -1,0 +1,6 @@
+﻿services:
+  eventsbookingbackend:
+    image: eventsbookingbackend
+    build:
+      context: .
+      dockerfile: Dockerfile
