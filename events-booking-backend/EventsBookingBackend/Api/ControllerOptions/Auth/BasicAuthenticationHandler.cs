@@ -6,6 +6,7 @@ using EventsBookingBackend.Infrastructure.Payment.Payme.Option;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 
+
 namespace EventsBookingBackend.Api.ControllerOptions.Auth;
 
 public class BasicAuthenticationHandler<T>(
@@ -18,7 +19,7 @@ public class BasicAuthenticationHandler<T>(
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         if (!Request.Headers.ContainsKey("Authorization"))
-            return AuthenticateResult.Fail("Missing Authorization Header");
+            return await CreateFailureResponse("Missing Authorization Header");
 
         try
         {
@@ -31,7 +32,7 @@ public class BasicAuthenticationHandler<T>(
             // Validate credentials here (e.g., check against a database or predefined credentials)
             if (username != option.Value.Login || password != option.Value.Password)
             {
-                return AuthenticateResult.Fail("Invalid Username or Password");
+                return await CreateFailureResponse("Invalid Username or Password");
             }
 
             var claims = new[]
@@ -47,7 +48,12 @@ public class BasicAuthenticationHandler<T>(
         }
         catch
         {
-            return AuthenticateResult.Fail("Invalid Authorization Header");
+            return await CreateFailureResponse("Invalid Authorization Header");
         }
+    }
+
+    protected virtual Task<AuthenticateResult> CreateFailureResponse(string message)
+    {
+        return Task.FromResult<AuthenticateResult>(AuthenticateResult.Fail(message));
     }
 }

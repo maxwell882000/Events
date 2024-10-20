@@ -25,12 +25,12 @@ jobs:
           echo "$VPS_SSH_KEY" > vps_key.pem
           chmod 600 vps_key.pem
           
-          ssh -i vps_key.pem -o StrictHostKeyChecking=no $VPS_USER@$VPS_IP 'echo "PAYME_LOGIN=$PAYME_LOGIN" >> /tmp/env_vars.txt'  # Add additional variables as needed
-          ssh -i vps_key.pem -o StrictHostKeyChecking=no $VPS_USER@$VPS_IP 'echo "PAYME_PASSWORD=$PAYME_PASSWORD" >> /tmp/env_vars.txt'  # Add additional variables as needed
-
-          # Run the deployment script on the remote VPS
-          ssh -i vps_key.pem -o StrictHostKeyChecking=no $VPS_USER@$VPS_IP 'source /tmp/env_vars.txt && bash -s' < ./deploy.sh
+          # Run the deployment script on the remote VPS, passing environment variables
+          ssh -i vps_key.pem -o StrictHostKeyChecking=no $VPS_USER@$VPS_IP << EOF
+            export PAYME_LOGIN="$PAYME_LOGIN"
+            export PAYME_PASSWORD="$PAYME_PASSWORD"
+            bash -s < ./deploy.sh
+          EOF
           
           # Remove the key file after use
           rm vps_key.pem
-          ssh -i vps_key.pem -o StrictHostKeyChecking=no $VPS_USER@$VPS_IP 'rm /tmp/env_vars.txt'
