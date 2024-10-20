@@ -29,7 +29,8 @@ jobs:
           ssh -i vps_key.pem -o StrictHostKeyChecking=no $VPS_USER@$VPS_IP << EOF
             export PAYME_LOGIN="$PAYME_LOGIN"
             export PAYME_PASSWORD="$PAYME_PASSWORD"
-            bash -s < ./deploy.sh
+            cd /root/Events
+            ./deploy.sh
           EOF
           
           # Remove the key file after use
