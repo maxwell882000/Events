@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventsBookingBackend.Api.Controllers.Payments;
 
-[Route("pay")]
 [IpRestriction([
     "185.234.113.1",
     "185.234.113.2",
@@ -29,7 +28,9 @@ namespace EventsBookingBackend.Api.Controllers.Payments;
 ])]
 [ServiceFilter(typeof(PaymeExceptionFilter))]
 [Authorize(AuthenticationSchemes = "Payme")]
-public class PaymeController(IPaymeService paymeService) : AppBaseController
+[Route("pay")]
+[ApiController]
+public class PaymeController(IPaymeService paymeService) : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult<PaymeSuccessResponse>> Pay([FromBody] PaymeRequest request)

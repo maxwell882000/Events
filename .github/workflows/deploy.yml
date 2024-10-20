@@ -18,8 +18,8 @@ jobs:
           VPS_IP: ${{ secrets.VPS_IP }}
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-          PAYME_LOGIN: ${{ PAYME_LOGIN }}
-          PAYME_PASSWORD: ${{ PAYME_PASSWORD }}
+          PAYME_LOGIN: ${{ secrets.PAYME_LOGIN }}
+          PAYME_PASSWORD: ${{ secrets.PAYME_PASSWORD }}
         run: |
           # Save the SSH private key to a temporary file
           echo "$VPS_SSH_KEY" > vps_key.pem
