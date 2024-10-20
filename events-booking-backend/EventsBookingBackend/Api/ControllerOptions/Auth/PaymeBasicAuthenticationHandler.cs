@@ -42,7 +42,13 @@ public class PaymeBasicAuthenticationHandler(
                     Id = paymeRequest?.Id,
                     Error = new PaymeMessageErrorDto()
                     {
-                        Code = PaymeErrors.InvalidAuthorization
+                        Code = PaymeErrors.InvalidAuthorization,
+                        Message = new MessageDto()
+                        {
+                            Uz = "",
+                            Ru = "",
+                            En = ""
+                        }
                     }
                 }, snakeCaseSettings);
                 Context.Response.ContentType = "text/json; charset=UTF-8";
