@@ -29,7 +29,7 @@ public class PaymeBasicAuthenticationHandler(
             var bodyAsString = await reader.ReadToEndAsync();
             // Reset the request body stream position to 0 so it can be read again
             Request.Body.Position = 0;
-            var paymeRequest = JsonConvert.DeserializeObject<PaymeRequest>(bodyAsString, JsonSettings.SnakeCase());
+            var paymeRequest = JsonConvert.DeserializeObject<PaymeRequest>(bodyAsString, PaymeJsonSettings.SnakeCase());
             Context.Response.StatusCode = StatusCodes.Status200OK;
             string result = JsonConvert.SerializeObject(new PaymeErrorDto()
             {
@@ -44,7 +44,7 @@ public class PaymeBasicAuthenticationHandler(
                         En = "Invalid Authorization"
                     }
                 }
-            }, JsonSettings.SnakeCase());
+            }, PaymeJsonSettings.SnakeCase());
             Context.Response.ContentType = "text/json; charset=UTF-8";
             await Context.Response.WriteAsync(result);
         }

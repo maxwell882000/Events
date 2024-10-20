@@ -42,7 +42,7 @@ public class PaymeController(IPaymeService paymeService) : ControllerBase
         var response = await paymeService.Pay(request);
 
 
-        var json = JsonConvert.SerializeObject(response, JsonSettings.SnakeCase());
+        var json = JsonConvert.SerializeObject(response, PaymeJsonSettings.SnakeCase());
 
 
         return new ContentResult

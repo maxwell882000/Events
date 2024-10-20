@@ -24,23 +24,23 @@ public class PaymeRequest
     {
         Methods.PerformTransaction =>
             JsonConvert.DeserializeObject<PerformTransactionRequest>(Params.ToString(),
-                JsonSettings.SnakeCase())!,
+                PaymeJsonSettings.SnakeCase())!,
         Methods.CreateTransaction => JsonConvert.DeserializeObject<CreateTransactionRequest>(
             Params.ToString(),
-            JsonSettings.SnakeCase())!,
+            PaymeJsonSettings.SnakeCase())!,
         Methods.CheckPerformTransaction => JsonConvert.DeserializeObject<CheckPerformTransactionRequest>(
             Params.ToString(),
-            JsonSettings.SnakeCase())!,
+            PaymeJsonSettings.SnakeCase())!,
         Methods.CancelTransaction => JsonConvert.DeserializeObject<CancelTransactionRequest>(
             Params.ToString(),
-            JsonSettings.SnakeCase())!,
+            PaymeJsonSettings.SnakeCase())!,
         Methods.CheckTransaction => JsonConvert.DeserializeObject<CheckTransactionRequest>(
             Params.ToString(),
-            JsonSettings.SnakeCase())!,
+            PaymeJsonSettings.SnakeCase())!,
         Methods.GetStatement =>
             JsonConvert.DeserializeObject<GetStatementRequest>(
                 Params.ToString(),
-                JsonSettings.SnakeCase())!,
+                PaymeJsonSettings.SnakeCase())!,
         _ => throw new InvalidOperationException("Unsupported method")
     };
 }
