@@ -28,22 +28,22 @@ public class PaymeService(
             switch (payment.Method)
             {
                 case PaymeRequest.Methods.CreateTransaction:
-                    response = await CreateTransaction((payment.Params as CreateTransactionRequest)!);
+                    response = await CreateTransaction((payment.P as CreateTransactionRequest)!);
                     break;
                 case PaymeRequest.Methods.CheckPerformTransaction:
-                    response = await CheckPerformTransaction((payment.Params as CheckPerformTransactionRequest)!);
+                    response = await CheckPerformTransaction((payment.P as CheckPerformTransactionRequest)!);
                     break;
                 case PaymeRequest.Methods.PerformTransaction:
-                    response = await PerformTransaction((payment.Params as PerformTransactionRequest)!);
+                    response = await PerformTransaction((payment.P as PerformTransactionRequest)!);
                     break;
                 case PaymeRequest.Methods.CancelTransaction:
-                    response = await CancelTransaction((payment.Params as CancelTransactionRequest)!);
+                    response = await CancelTransaction((payment.P as CancelTransactionRequest)!);
                     break;
                 case PaymeRequest.Methods.CheckTransaction:
-                    response = await CheckTransaction((payment.Params as CheckTransactionRequest)!);
+                    response = await CheckTransaction((payment.P as CheckTransactionRequest)!);
                     break;
                 case PaymeRequest.Methods.GetStatement:
-                    response = await GetStatement((payment.Params as GetStatementRequest)!);
+                    response = await GetStatement((payment.P as GetStatementRequest)!);
                     break;
             }
 
