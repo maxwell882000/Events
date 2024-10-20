@@ -30,4 +30,3 @@ jobs:
           
           # Remove the key file after use
           rm vps_key.pem
-          ssh -i vps_key.pem -o StrictHostKeyChecking=no $VPS_USER@$VPS_IP 'rm /tmp/env_vars.txt'
