@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventsBookingBackend.Api.Controllers.Payments;
 
-[Microsoft.AspNetCore.Components.Route("pay")]
+[Route("pay")]
 [IpRestriction([
     "185.234.113.1",
     "185.234.113.2",
