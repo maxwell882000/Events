@@ -45,9 +45,9 @@ public class PaymeBasicAuthenticationHandler(
                         Code = PaymeErrors.InvalidAuthorization,
                         Message = new MessageDto()
                         {
-                            Uz = "",
-                            Ru = "",
-                            En = ""
+                            Uz = "Noto'g'ri avtorizatsiya",
+                            Ru = "Недействительная авторизация",
+                            En = "Invalid Authorization"
                         }
                     }
                 }, snakeCaseSettings);
