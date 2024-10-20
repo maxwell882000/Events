@@ -86,10 +86,12 @@ public static class ApplicationDi
             options.SuppressInferBindingSourcesForParameters = true;
             options.SuppressModelStateInvalidFilter = true;
         });
+        services.AddScoped<PaymeExceptionFilter>();
         services.AddControllers(options =>
             {
                 options.Conventions.Add(new RouteTokenTransformerConvention(new SnakeCaseRoutingConvention()));
                 options.Filters.Add<ValidationResponseFilter>();
+                options.Filters.Add<PaymeExceptionFilter>();
             })
             .AddNewtonsoftJson(options =>
             {
