@@ -4,6 +4,7 @@ using EventsBookingBackend.Application.Common;
 using EventsBookingBackend.Infrastructure.Payment.Payme.Models.Requests;
 using EventsBookingBackend.Infrastructure.Payment.Payme.Models.Responses;
 using EventsBookingBackend.Infrastructure.Payment.Payme.Services;
+using EventsBookingBackend.Shared.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -40,14 +41,8 @@ public class PaymeController(IPaymeService paymeService) : ControllerBase
     {
         var response = await paymeService.Pay(request);
 
-        var snakeCaseSettings = new JsonSerializerSettings
-        {
-            ContractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new SnakeCaseNamingStrategy()
-            }
-        };
-        var json = JsonConvert.SerializeObject(response, snakeCaseSettings);
+
+        var json = JsonConvert.SerializeObject(response, JsonSettings.SnakeCase());
 
 
         return new ContentResult
