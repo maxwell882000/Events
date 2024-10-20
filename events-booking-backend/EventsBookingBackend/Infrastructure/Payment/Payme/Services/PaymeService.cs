@@ -5,7 +5,7 @@ using EventsBookingBackend.Domain.Booking.Repositories;
 using EventsBookingBackend.Domain.Booking.Specifications;
 using EventsBookingBackend.Domain.Booking.ValueObjects;
 using EventsBookingBackend.Infrastructure.Payment.Payme.Entities;
-using EventsBookingBackend.Infrastructure.Payment.Payme.Models.Errors;
+using EventsBookingBackend.Infrastructure.Payment.Payme.Errors;
 using EventsBookingBackend.Infrastructure.Payment.Payme.Models.Requests;
 using EventsBookingBackend.Infrastructure.Payment.Payme.Models.Responses;
 using EventsBookingBackend.Infrastructure.Payment.Payme.Repositories;
@@ -53,9 +53,9 @@ public class PaymeService(
                 Result = response
             };
         }
-        catch (PaymeErrorResponse e)
+        catch (PaymeMessageException e)
         {
-            throw new PaymeErrorModel() { Id = payment.Id, Error = e };
+            throw new PaymeException() { Id = payment.Id, Error = e };
         }
     }
 
@@ -63,7 +63,7 @@ public class PaymeService(
     {
         var transaction = await transactionRepository.FindAll(new GetTransactionByTime(request.From, request.To));
         if (transaction == null)
-            throw new PaymeErrorResponse() { Code = PaymeErrors.TransactionNotFound };
+            throw new PaymeMessageException() { Code = PaymeErrors.TransactionNotFound };
         return new GetStatementResponse()
         {
             Transactions = mapper.Map<List<GetStatementResponse.TransactionDto>>(transaction)
@@ -74,7 +74,7 @@ public class PaymeService(
     {
         var transaction = await transactionRepository.FindFirst(new GetTransactionById(request.Id));
         if (transaction == null)
-            throw new PaymeErrorResponse() { Code = PaymeErrors.TransactionNotFound };
+            throw new PaymeMessageException() { Code = PaymeErrors.TransactionNotFound };
         return mapper.Map<CheckTransactionResponse>(transaction);
     }
 
@@ -82,7 +82,7 @@ public class PaymeService(
     {
         var transaction = await transactionRepository.FindFirst(new GetTransactionById(request.Id));
         if (transaction == null)
-            throw new PaymeErrorResponse() { Code = PaymeErrors.TransactionNotFound };
+            throw new PaymeMessageException() { Code = PaymeErrors.TransactionNotFound };
 
         if (transaction.IsCancelledState())
             return mapper.Map<CancelTransactionResponse>(transaction);
@@ -90,7 +90,7 @@ public class PaymeService(
         var booking = await bookingRepository.FindFirst(new GetBookingById(transaction.Account.BookingId));
         if (booking == null)
         {
-            throw PaymeErrorResponse.InvalidBookingId();
+            throw PaymeMessageException.InvalidBookingId();
         }
 
         if (transaction.State == TransactionState.Pending || booking.Status == BookingStatus.Canceled)
@@ -99,19 +99,19 @@ public class PaymeService(
             await transactionRepository.Update(transaction);
         }
 
-        throw new PaymeErrorResponse() { Code = PaymeErrors.InvalidCancelOperation };
+        throw new PaymeMessageException() { Code = PaymeErrors.InvalidCancelOperation };
     }
 
     private async Task<CheckPerformTransactionResponse> CheckPerformTransaction(CheckPerformTransactionRequest request)
     {
         var booking = await bookingRepository.FindFirst(new GetBookingById(request.Account?.BookingId ?? Guid.Empty));
         if (booking == null)
-            throw PaymeErrorResponse.InvalidBookingId();
+            throw PaymeMessageException.InvalidBookingId();
         if (booking.Status != BookingStatus.Waiting)
-            throw PaymeErrorResponse.InvalidBookingStatus();
+            throw PaymeMessageException.InvalidBookingStatus();
         if (booking.BookingType.CostInTiyn != request.Amount)
         {
-            throw new PaymeErrorResponse() { Code = PaymeErrors.InvalidAmount };
+            throw new PaymeMessageException() { Code = PaymeErrors.InvalidAmount };
         }
 
         return CheckPerformTransactionResponse.AllowRequest();
@@ -121,9 +121,9 @@ public class PaymeService(
     {
         var transaction = await transactionRepository.FindFirst(new GetTransactionById(request.Id));
         if (transaction == null)
-            throw new PaymeErrorResponse() { Code = PaymeErrors.TransactionNotFound };
+            throw new PaymeMessageException() { Code = PaymeErrors.TransactionNotFound };
         if (transaction.IsCancelledState())
-            throw new PaymeErrorResponse() { Code = PaymeErrors.InvalidOperation };
+            throw new PaymeMessageException() { Code = PaymeErrors.InvalidOperation };
 
         if (transaction.State == TransactionState.Completed)
             return mapper.Map<PerformTransactionResponse>(transaction);
@@ -131,13 +131,13 @@ public class PaymeService(
         {
             transaction.CancelTransactionByTimeOut();
             await transactionRepository.Update(transaction);
-            throw new PaymeErrorResponse() { Code = PaymeErrors.InvalidOperation };
+            throw new PaymeMessageException() { Code = PaymeErrors.InvalidOperation };
         }
 
         var booking = await bookingRepository.FindFirst(new GetBookingById(transaction.Account.BookingId));
 
         if (booking == null)
-            throw PaymeErrorResponse.InvalidBookingId();
+            throw PaymeMessageException.InvalidBookingId();
 
         using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
         {
@@ -167,14 +167,14 @@ public class PaymeService(
 
         if (transaction!.State != TransactionState.Pending)
         {
-            throw new PaymeErrorResponse() { Code = PaymeErrors.InvalidOperation };
+            throw new PaymeMessageException() { Code = PaymeErrors.InvalidOperation };
         }
 
         if (transaction.CheckCreateTimeTimeout())
         {
             transaction.CancelTransactionByTimeOut();
             await transactionRepository.Update(transaction);
-            throw new PaymeErrorResponse() { Code = PaymeErrors.InvalidOperation };
+            throw new PaymeMessageException() { Code = PaymeErrors.InvalidOperation };
         }
 
         return mapper.Map<CreateTransactionResponse>(transaction);

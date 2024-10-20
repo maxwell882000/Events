@@ -1,4 +1,5 @@
 using EventsBookingBackend.Infrastructure.Payment.Payme.Entities;
+using EventsBookingBackend.Infrastructure.Payment.Payme.Errors;
 using EventsBookingBackend.Infrastructure.Payment.Payme.Models.Dto;
 using EventsBookingBackend.Infrastructure.Payment.Payme.Models.Requests;
 using EventsBookingBackend.Infrastructure.Payment.Payme.Models.Responses;
@@ -26,5 +27,8 @@ public class PaymeProfile : AutoMapper.Profile
             .ForMember(dest => dest.Transaction, opt => opt.MapFrom(src => src.Id));
 
         CreateMap<AccountDto, Account>();
+
+        CreateMap<PaymeException, PaymeErrorDto>();
+        CreateMap<PaymeMessageException, PaymeMessageErrorDto>();
     }
 }
