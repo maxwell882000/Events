@@ -8,6 +8,63 @@ public class PaymeMessageException : Exception
     public MessageDto? Message { get; set; }
 
 
+    public static PaymeMessageException InvalidAmount()
+    {
+        return new PaymeMessageException()
+        {
+            Code = PaymeErrors.InvalidAmount,
+            Message = new MessageDto()
+            {
+                En = "Invalid amount",
+                Ru = "Недопустимая сумма",
+                Uz = "Noto'g'ri miqdor"
+            }
+        };
+    }
+
+    public static PaymeMessageException TransactionNotFound()
+    {
+        return new PaymeMessageException()
+        {
+            Code = PaymeErrors.TransactionNotFound,
+            Message = new MessageDto()
+            {
+                En = "Transaction not found",
+                Ru = "Транзакция не найдена",
+                Uz = "Tranzaksiya topilmadi"
+            }
+        };
+    }
+
+    public static PaymeMessageException InvalidOperation()
+    {
+        return new PaymeMessageException()
+        {
+            Code = PaymeErrors.InvalidOperation,
+            Message = new MessageDto()
+            {
+                En = "Invalid operation",
+                Ru = "Недопустимая операция",
+                Uz = "Noto'g'ri operatsiya"
+            }
+        };
+    }
+
+    public static PaymeMessageException InvalidCancelOperation()
+    {
+        return new PaymeMessageException()
+        {
+            Code = PaymeErrors.InvalidCancelOperation,
+            Message = new MessageDto()
+            {
+                En = "Invalid cancel operation",
+                Ru = "Недопустимая операция отмены",
+                Uz = "Noto'g'ri bekor qilish operatsiyasi"
+            }
+        };
+    }
+
+
     public static PaymeMessageException InvalidBookingId()
     {
         return new PaymeMessageException()

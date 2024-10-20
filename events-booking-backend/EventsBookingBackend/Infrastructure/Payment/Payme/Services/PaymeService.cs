@@ -63,7 +63,7 @@ public class PaymeService(
     {
         var transaction = await transactionRepository.FindAll(new GetTransactionByTime(request.From, request.To));
         if (transaction == null)
-            throw new PaymeMessageException() { Code = PaymeErrors.TransactionNotFound };
+            throw  PaymeMessageException.TransactionNotFound();
         return new GetStatementResponse()
         {
             Transactions = mapper.Map<List<GetStatementResponse.TransactionDto>>(transaction)
@@ -74,7 +74,7 @@ public class PaymeService(
     {
         var transaction = await transactionRepository.FindFirst(new GetTransactionById(request.Id));
         if (transaction == null)
-            throw new PaymeMessageException() { Code = PaymeErrors.TransactionNotFound };
+            throw  PaymeMessageException.TransactionNotFound();
         return mapper.Map<CheckTransactionResponse>(transaction);
     }
 
@@ -82,7 +82,7 @@ public class PaymeService(
     {
         var transaction = await transactionRepository.FindFirst(new GetTransactionById(request.Id));
         if (transaction == null)
-            throw new PaymeMessageException() { Code = PaymeErrors.TransactionNotFound };
+            throw  PaymeMessageException.TransactionNotFound();
 
         if (transaction.IsCancelledState())
             return mapper.Map<CancelTransactionResponse>(transaction);
@@ -99,7 +99,7 @@ public class PaymeService(
             await transactionRepository.Update(transaction);
         }
 
-        throw new PaymeMessageException() { Code = PaymeErrors.InvalidCancelOperation };
+        throw  PaymeMessageException.InvalidCancelOperation();
     }
 
     private async Task<CheckPerformTransactionResponse> CheckPerformTransaction(CheckPerformTransactionRequest request)
@@ -111,7 +111,7 @@ public class PaymeService(
             throw PaymeMessageException.InvalidBookingStatus();
         if (booking.BookingType.CostInTiyn != request.Amount)
         {
-            throw new PaymeMessageException() { Code = PaymeErrors.InvalidAmount };
+            throw PaymeMessageException.InvalidAmount();
         }
 
         return CheckPerformTransactionResponse.AllowRequest();
@@ -121,9 +121,9 @@ public class PaymeService(
     {
         var transaction = await transactionRepository.FindFirst(new GetTransactionById(request.Id));
         if (transaction == null)
-            throw new PaymeMessageException() { Code = PaymeErrors.TransactionNotFound };
+            throw  PaymeMessageException.TransactionNotFound();
         if (transaction.IsCancelledState())
-            throw new PaymeMessageException() { Code = PaymeErrors.InvalidOperation };
+            throw  PaymeMessageException.InvalidOperation();
 
         if (transaction.State == TransactionState.Completed)
             return mapper.Map<PerformTransactionResponse>(transaction);
@@ -131,7 +131,7 @@ public class PaymeService(
         {
             transaction.CancelTransactionByTimeOut();
             await transactionRepository.Update(transaction);
-            throw new PaymeMessageException() { Code = PaymeErrors.InvalidOperation };
+            throw  PaymeMessageException.InvalidOperation();
         }
 
         var booking = await bookingRepository.FindFirst(new GetBookingById(transaction.Account.BookingId));
@@ -167,14 +167,14 @@ public class PaymeService(
 
         if (transaction!.State != TransactionState.Pending)
         {
-            throw new PaymeMessageException() { Code = PaymeErrors.InvalidOperation };
+            throw  PaymeMessageException.InvalidOperation();
         }
 
         if (transaction.CheckCreateTimeTimeout())
         {
             transaction.CancelTransactionByTimeOut();
             await transactionRepository.Update(transaction);
-            throw new PaymeMessageException() { Code = PaymeErrors.InvalidOperation };
+            throw  PaymeMessageException.InvalidOperation();
         }
 
         return mapper.Map<CreateTransactionResponse>(transaction);
