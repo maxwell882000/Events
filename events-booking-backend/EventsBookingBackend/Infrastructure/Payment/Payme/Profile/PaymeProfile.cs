@@ -27,9 +27,10 @@ public class PaymeProfile : AutoMapper.Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PaymeId))
             .ForMember(dest => dest.Transaction, opt => opt.MapFrom(src => src.Id));
 
-        CreateMap<AccountDto, Account>();
+        CreateMap<AccountDto, Account>().ReverseMap();
 
         CreateMap<PaymeException, PaymeErrorDto>();
+        CreateMap<Receiver, ReceiverDto>();
         CreateMap<PaymeMessageException, PaymeMessageErrorDto>();
     }
 }

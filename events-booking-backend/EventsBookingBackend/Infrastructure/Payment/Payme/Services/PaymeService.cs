@@ -62,7 +62,8 @@ public class PaymeService(
 
     private async Task<GetStatementResponse> GetStatement(GetStatementRequest request)
     {
-        var transaction = await transactionRepository.FindAll(new GetTransactionByTime(request.From, request.To));
+        List<TransactionDetail<Account>> transaction =
+            await transactionRepository.FindAll(new GetTransactionByTime(request.From, request.To));
         if (transaction == null)
             throw PaymeMessageException.TransactionNotFound();
         return new GetStatementResponse()
