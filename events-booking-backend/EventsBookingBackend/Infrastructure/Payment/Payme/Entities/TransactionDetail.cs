@@ -14,7 +14,7 @@ public class TransactionDetail<T> : BaseEntity
     public long PerformTime { get; set; } = 0; // "perform_time"
     public long CancelTime { get; set; } = 0; // "cancel_time"
     public TransactionState State { get; set; } // "state"
-    public TransactionReason Reason { get; set; } // "reason"
+    public TransactionReason? Reason { get; set; } // "reason"
     public List<Receiver> Receivers { get; set; } // "receivers"
 
     public void CreateTransaction()

@@ -9,5 +9,5 @@ public class CheckTransactionResponse
     public long CancelTime { get; set; } // "cancel_time"
     public string Transaction { get; set; } // "transaction"
     public TransactionState State { get; set; } // "state"
-    public TransactionReason Reason { get; set; } // "reason"
+    public TransactionReason? Reason { get; set; } = null;
 }
