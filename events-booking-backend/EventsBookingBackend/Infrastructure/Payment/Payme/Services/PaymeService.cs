@@ -97,7 +97,17 @@ public class PaymeService(
         if (transaction.State == TransactionState.Pending || booking.Status == BookingStatus.Canceled)
         {
             transaction.CancelTransaction(request.Reason);
-            await transactionRepository.Update(transaction);
+            using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                if (booking.Status != BookingStatus.Canceled)
+                {
+                    booking.Status = BookingStatus.Canceled;
+                    await bookingRepository.Update(booking);
+                }
+
+                await transactionRepository.Update(transaction);
+                transactionScope.Complete();
+            }
         }
 
         throw PaymeMessageException.InvalidCancelOperation();
@@ -174,6 +184,7 @@ public class PaymeService(
                     await bookingRepository.Update(booking);
                     transactionScope.Complete();
                 }
+
                 return mapper.Map<CreateTransactionResponse>(newTransactionDetail);
             }
         }

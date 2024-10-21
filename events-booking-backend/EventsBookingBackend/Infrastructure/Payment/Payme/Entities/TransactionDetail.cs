@@ -36,7 +36,9 @@ public class TransactionDetail<T> : BaseEntity
 
     public void CancelTransaction(TransactionReason reason)
     {
-        State = TransactionState.Canceled;
+        State = State == TransactionState.Pending
+            ? TransactionState.Canceled
+            : TransactionState.CanceledAfterCompletion;
         Reason = reason;
         CancelTime = ConvertDateTimeToUnixTimestamp(DateTime.Now);
     }
