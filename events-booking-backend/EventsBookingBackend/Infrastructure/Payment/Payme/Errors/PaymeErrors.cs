@@ -8,5 +8,6 @@ public enum PaymeErrors
     InvalidCancelOperation = -31007,
     InvalidBookingId = -31050,
     InvalidBookingStatus = -31051,
+    TransactionCreated = -31052,
     InvalidAuthorization = -32504,
 }

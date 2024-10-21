@@ -12,7 +12,7 @@ public class PaymeMessageException : Exception
     {
         return new PaymeMessageException()
         {
-            Code = PaymeErrors.InvalidAmount,
+            Code = PaymeErrors.TransactionCreated,
             Message = new MessageDto()
             {
                 En = "Transaction Created",
