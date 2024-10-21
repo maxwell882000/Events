@@ -108,7 +108,7 @@ public class PaymeService(
         var booking = await bookingRepository.FindFirst(new GetBookingById(request.Account?.BookingId ?? Guid.Empty));
         if (booking == null)
             throw PaymeMessageException.InvalidBookingId();
-        if (booking.Status != BookingStatus.Waiting)
+        if (booking.Status != BookingStatus.Waiting || booking.Status != BookingStatus.TransactionCreated)
             throw PaymeMessageException.InvalidBookingStatus();
         if (booking.BookingType.CostInTiyn != request.Amount)
         {
@@ -167,7 +167,13 @@ public class PaymeService(
 
                 var newTransactionDetail = mapper.Map<TransactionDetail<Account>>(request);
                 newTransactionDetail.CreateTransaction();
-                await transactionRepository.Create(newTransactionDetail);
+                using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                {
+                    await transactionRepository.Create(newTransactionDetail);
+                    booking.Status = BookingStatus.TransactionCreated;
+                    await bookingRepository.Update(booking);
+                    transactionScope.Complete();
+                }
                 return mapper.Map<CreateTransactionResponse>(newTransactionDetail);
             }
         }
