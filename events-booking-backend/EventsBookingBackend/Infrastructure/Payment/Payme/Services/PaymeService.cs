@@ -108,7 +108,7 @@ public class PaymeService(
         var booking = await bookingRepository.FindFirst(new GetBookingById(request.Account?.BookingId ?? Guid.Empty));
         if (booking == null)
             throw PaymeMessageException.InvalidBookingId();
-        if (booking.Status != BookingStatus.Waiting || booking.Status != BookingStatus.TransactionCreated)
+        if (!(booking.Status == BookingStatus.Waiting || booking.Status == BookingStatus.TransactionCreated))
             throw PaymeMessageException.InvalidBookingStatus();
         if (booking.BookingType.CostInTiyn != request.Amount)
         {
