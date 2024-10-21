@@ -108,6 +108,8 @@ public class PaymeService(
                 await transactionRepository.Update(transaction);
                 transactionScope.Complete();
             }
+
+            return mapper.Map<CancelTransactionResponse>(transaction);
         }
 
         throw PaymeMessageException.InvalidCancelOperation();
