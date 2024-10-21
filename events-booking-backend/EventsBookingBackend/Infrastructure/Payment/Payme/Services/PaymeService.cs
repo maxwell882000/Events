@@ -159,6 +159,12 @@ public class PaymeService(
             var response = await CheckPerformTransaction(mapper.Map<CheckPerformTransactionRequest>(request));
             if (response.Allow)
             {
+                Booking? booking = await bookingRepository.FindFirst(new GetBookingById(request.Account.BookingId));
+                if (booking!.Status == BookingStatus.TransactionCreated)
+                {
+                    throw PaymeMessageException.TransactionCreated();
+                }
+
                 var newTransactionDetail = mapper.Map<TransactionDetail<Account>>(request);
                 newTransactionDetail.CreateTransaction();
                 await transactionRepository.Create(newTransactionDetail);

@@ -8,6 +8,20 @@ public class PaymeMessageException : Exception
     public MessageDto? Message { get; set; }
 
 
+    public static PaymeMessageException TransactionCreated()
+    {
+        return new PaymeMessageException()
+        {
+            Code = PaymeErrors.InvalidAmount,
+            Message = new MessageDto()
+            {
+                En = "Transaction Created",
+                Ru = "Транзакция создана",
+                Uz = "Tranzaksiya yaratildi"
+            }
+        };
+    }
+
     public static PaymeMessageException InvalidAmount()
     {
         return new PaymeMessageException()

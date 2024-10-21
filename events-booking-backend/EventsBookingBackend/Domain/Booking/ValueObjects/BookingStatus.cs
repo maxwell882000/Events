@@ -4,5 +4,6 @@ public enum BookingStatus
 {
     Waiting,
     Paid,
-    Canceled
+    Canceled,
+    TransactionCreated,
 }
