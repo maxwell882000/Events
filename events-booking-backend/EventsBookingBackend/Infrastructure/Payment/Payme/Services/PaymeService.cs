@@ -162,7 +162,7 @@ public class PaymeService(
                 var newTransactionDetail = mapper.Map<TransactionDetail<Account>>(request);
                 newTransactionDetail.CreateTransaction();
                 await transactionRepository.Create(newTransactionDetail);
-                return mapper.Map<CreateTransactionResponse>(transaction);
+                return mapper.Map<CreateTransactionResponse>(newTransactionDetail);
             }
         }
 
