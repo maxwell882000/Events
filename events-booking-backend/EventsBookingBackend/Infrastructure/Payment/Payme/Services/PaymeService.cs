@@ -1,6 +1,7 @@
 using System.Transactions;
 using AutoMapper;
 using EventsBookingBackend.Api.ControllerOptions.Types;
+using EventsBookingBackend.Domain.Booking.Entities;
 using EventsBookingBackend.Domain.Booking.Repositories;
 using EventsBookingBackend.Domain.Booking.Specifications;
 using EventsBookingBackend.Domain.Booking.ValueObjects;
@@ -87,7 +88,7 @@ public class PaymeService(
         if (transaction.IsCancelledState())
             return mapper.Map<CancelTransactionResponse>(transaction);
 
-        var booking = await bookingRepository.FindFirst(new GetBookingById(transaction.Account.BookingId));
+        Booking? booking = await bookingRepository.FindFirst(new GetBookingById(transaction.Account.BookingId));
         if (booking == null)
         {
             throw PaymeMessageException.InvalidBookingId();

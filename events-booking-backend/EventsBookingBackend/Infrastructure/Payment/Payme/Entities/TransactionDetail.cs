@@ -31,7 +31,7 @@ public class TransactionDetail<T> : BaseEntity
 
     public bool IsCancelledState()
     {
-        return State != TransactionState.Completed && State != TransactionState.Completed;
+        return State != TransactionState.Completed && State != TransactionState.Pending;
     }
 
     public void CancelTransaction(TransactionReason reason)

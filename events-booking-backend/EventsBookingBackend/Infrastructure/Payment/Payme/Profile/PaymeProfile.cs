@@ -13,6 +13,7 @@ public class PaymeProfile : AutoMapper.Profile
     {
         CreateMap<CreateTransactionRequest, CheckPerformTransactionRequest>();
         CreateMap<CreateTransactionRequest, TransactionDetail<Account>>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.PaymeId, opt => opt.MapFrom(src => src.Id));
         CreateMap<TransactionDetail<Account>, CreateTransactionResponse>()
             .ForMember(dest => dest.Transaction, opt => opt.MapFrom(src => src.Id));
