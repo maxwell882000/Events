@@ -54,6 +54,7 @@ services:
       dockerfile: ./EventsBookingJob/Dockerfile
     environment:
       - Database__Postgresql__ConnectionString=Host=postgres;Port=5432;Username=postgres;Password=yourpassword;Database=events_booking;Pooling=true;
+      - TZ=Asia/Tashkent  # Set the timezone to Tashkent
     depends_on:
       - postgres
     networks:
@@ -69,6 +70,7 @@ services:
       - PaymeOption__Login=${PAYME_LOGIN}
       - PaymeOption__Password=${PAYME_PASSWORD}
       - HostOption__BaseUrl=https://api.sportia.uz/
+      - TZ=Asia/Tashkent  # Set the timezone to Tashkent
     networks:
       - sportia-network
     volumes:
@@ -89,5 +91,3 @@ volumes:
 networks:
   sportia-network:
     driver: bridge
-
-
