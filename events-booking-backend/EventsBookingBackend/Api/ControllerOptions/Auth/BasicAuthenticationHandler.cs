@@ -30,7 +30,7 @@ public class BasicAuthenticationHandler<T>(
             var password = credentials[1];
 
             // Validate credentials here (e.g., check against a database or predefined credentials)
-            if (username != option.Value.Login || password != option.Value.Password)
+            if (username != option.Value.Login && password != option.Value.Password)
             {
                 return await CreateFailureResponse("Invalid Username or Password");
             }

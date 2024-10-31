@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventsBookingBackend.Domain.Booking.Specifications;
 
-public class GetBookingTypeByCategory(Guid categoryId) : ISpecification<BookingType>
+public class GetBookingTypeByEvent(Guid eventId) : ISpecification<BookingType>
 {
     public IQueryable<BookingType> Apply(IQueryable<BookingType> query)
     {
         return query
             .Include(e => e.BookingOptions.OrderBy(op => op.Order))
-            .Where(e => e.CategoryId == categoryId && e.EventId == null).OrderBy(e => e.Order);
+            .Where(bookingType => bookingType.EventId == eventId).AsNoTracking();
     }
 }

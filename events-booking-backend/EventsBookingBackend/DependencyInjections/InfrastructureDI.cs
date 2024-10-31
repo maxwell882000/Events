@@ -1,6 +1,7 @@
 using EventsBookingBackend.Api.ControllerOptions.Auth;
 using EventsBookingBackend.Api.Identity;
 using EventsBookingBackend.Domain.Auth.Entities;
+using EventsBookingBackend.Domain.Booking.Entities;
 using EventsBookingBackend.Domain.Booking.Repositories;
 using EventsBookingBackend.Domain.Category.Repositories;
 using EventsBookingBackend.Domain.Event.Repositories;
@@ -156,6 +157,7 @@ public static class InfrastructureDi
         services.AddTransient<IBookingRepository, BookingRepository>();
         services.AddTransient<IBookingLimitRepository, BookingLimitRepository>();
         services.AddTransient<IBookingEventRepository, BookingEventRepository>();
+        services.AddTransient<IBookingGroupRepository, BookingGroupRepository>();
 
         #endregion
 

@@ -8,4 +8,6 @@ public interface IBookingDomainService
     public Task<int> SameBookingsCount(Entities.Booking booking);
     public Task<BookingLimit?> GetBookingLimit(Entities.Booking booking);
     public Task CancelBooking(Guid bookingId);
+    public Task PaidBooking(Guid bookingId, decimal amount);
+    public Task CheckBookingPayable(Guid bookingId, decimal amount);
 }

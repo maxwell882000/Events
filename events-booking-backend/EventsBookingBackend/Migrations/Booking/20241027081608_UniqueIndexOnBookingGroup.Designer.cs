@@ -3,6 +3,7 @@ using System;
 using EventsBookingBackend.Infrastructure.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventsBookingBackend.Migrations.Booking
 {
     [DbContext(typeof(BookingDbContext))]
-    partial class BookingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241027081608_UniqueIndexOnBookingGroup")]
+    partial class UniqueIndexOnBookingGroup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,9 +164,9 @@ namespace EventsBookingBackend.Migrations.Booking
                     b.HasKey("Id")
                         .HasName("pk_booking_groups");
 
-                    b.HasIndex("BookingTypeId", "EventId", "UserOptions")
+                    b.HasIndex("BookingTypeId", "EventId")
                         .IsUnique()
-                        .HasDatabaseName("ix_booking_groups_booking_type_id_event_id_user_options");
+                        .HasDatabaseName("ix_booking_groups_booking_type_id_event_id");
 
                     b.ToTable("booking_groups", "bookings");
                 });

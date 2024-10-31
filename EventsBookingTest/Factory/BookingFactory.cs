@@ -14,6 +14,11 @@ public class BookingFactory
         return new BookingRepository(context);
     }
 
+    public static IBookingGroupRepository CreateBookingGroupRepository(BookingDbContext context)
+    {
+        return new BookingGroupRepository(context);
+    }
+
 
     public static IBookingOptionRepository CreateBookingOptionRepository(BookingDbContext context)
     {
@@ -35,6 +40,7 @@ public class BookingFactory
     {
         var context = new BookingDbContext(DbContextOptionsFactory<BookingDbContext>.Create()!);
         return new BookDomainService(CreateBookingRepository(context),
+            CreateBookingGroupRepository(context),
             CreateBookingOptionRepository(context),
             CreateBookingLimitRepository(context));
     }

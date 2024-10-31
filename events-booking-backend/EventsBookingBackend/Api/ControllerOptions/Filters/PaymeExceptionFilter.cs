@@ -22,27 +22,36 @@ public class PaymeExceptionFilter(IMapper mapper) : IAsyncActionFilter
         context.HttpContext.Request.Body.Position = 0;
         var paymeRequest = JsonConvert.DeserializeObject<PaymeRequest>(bodyAsString, PaymeJsonSettings.SnakeCase());
 
-        var resultContext = await next();
-        if (resultContext.Exception != null && resultContext.Exception is PaymeException paymeErrorModel)
+        try
         {
-            resultContext.Result = new ObjectResult(mapper.Map<PaymeErrorDto>(paymeErrorModel))
+            var resultContext = await next();
+            if (resultContext.Exception != null && resultContext.Exception is PaymeException paymeErrorModel)
             {
-                StatusCode = StatusCodes.Status200OK
-            };
-            resultContext.ExceptionHandled = true;
-        }
+                resultContext.Result = new ObjectResult(mapper.Map<PaymeErrorDto>(paymeErrorModel))
+                {
+                    StatusCode = StatusCodes.Status200OK
+                };
+                resultContext.ExceptionHandled = true;
+            }
 
-        if (resultContext.Exception != null && resultContext.Exception is PaymeMessageException paymeMessageException)
+            if (resultContext.Exception != null &&
+                resultContext.Exception is PaymeMessageException paymeMessageException)
+            {
+                resultContext.Result = new ObjectResult(new PaymeErrorDto()
+                {
+                    Id = paymeRequest.Id,
+                    Error = mapper.Map<PaymeMessageErrorDto>(paymeMessageException)
+                })
+                {
+                    StatusCode = StatusCodes.Status200OK
+                };
+                resultContext.ExceptionHandled = true;
+            }
+        }
+        catch (Exception e)
         {
-            resultContext.Result = new ObjectResult(new PaymeErrorDto()
-            {
-                Id = paymeRequest.Id,
-                Error = mapper.Map<PaymeMessageErrorDto>(paymeMessageException)
-            })
-            {
-                StatusCode = StatusCodes.Status200OK
-            };
-            resultContext.ExceptionHandled = true;
+            Console.WriteLine(e);
+            throw;
         }
     }
 }

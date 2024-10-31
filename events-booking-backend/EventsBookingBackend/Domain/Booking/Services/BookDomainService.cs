@@ -1,4 +1,6 @@
+using System.Transactions;
 using EventsBookingBackend.Domain.Booking.Entities;
+using EventsBookingBackend.Domain.Booking.Exceptions;
 using EventsBookingBackend.Domain.Booking.Repositories;
 using EventsBookingBackend.Domain.Booking.Specifications;
 using EventsBookingBackend.Domain.Booking.ValueObjects;
@@ -9,6 +11,7 @@ namespace EventsBookingBackend.Domain.Booking.Services;
 
 public class BookDomainService(
     IBookingRepository bookingRepository,
+    IBookingGroupRepository bookingGroupRepository,
     IBookingOptionRepository bookingOptionRepository,
     IBookingLimitRepository bookingLimitRepository)
     : IBookingDomainService
@@ -32,9 +35,31 @@ public class BookDomainService(
             throw new DomainRuleException("Количество забранированных мест достигло лимита !");
         }
 
-        await bookingRepository.Create(booking);
+        using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+        {
+            await bookingRepository.Create(booking);
+            BookingGroup? group = await GetBookingGroup(booking);
+            if (group == null)
+            {
+                group = BookingGroup.FromBooking(booking);
+                await bookingGroupRepository.Create(group);
+            }
 
-        return booking;
+            group.Bookings.Add(booking);
+            group.SetStatus(currentLimit);
+            booking.BookingGroupId = group.Id;
+            await bookingGroupRepository.Update(group);
+            transactionScope.Complete();
+        }
+
+        return (await bookingRepository.FindFirst(new GetBookingById(booking.Id)))!;
+    }
+
+    private async Task<BookingGroup?> GetBookingGroup(Entities.Booking booking)
+    {
+        var group = await bookingGroupRepository.FindFirst(new GetBookingGroup(booking.EventId, booking.BookingTypeId,
+            booking.HashOptions()));
+        return group;
     }
 
     private async Task ValidateBookingOptionsValue(Entities.Booking booking)
@@ -55,17 +80,18 @@ public class BookDomainService(
 
     public async Task<bool> CheckSameBookingWithUser(Entities.Booking booking)
     {
-        var allBookings = await bookingRepository
-            .FindAll(new GetSimilarBookings(booking.EventId, booking.BookingTypeId));
-        return allBookings.Any(e => e.UserId == booking.UserId && booking.IsSameBooking(e.BookingOptions));
+        var group = await bookingGroupRepository.FindFirst(new CheckUserInBookingGroup(
+            booking.EventId,
+            booking.UserId,
+            booking.BookingTypeId,
+            booking.HashOptions()));
+        return group != null;
     }
 
     public async Task<int> SameBookingsCount(Entities.Booking booking)
     {
-        var allBookings = await bookingRepository
-            .FindAll(new GetSimilarBookings(booking.EventId, booking.BookingTypeId));
-
-        return allBookings.Count(e => e.IsSameBooking(booking.BookingOptions));
+        var group = await GetBookingGroup(booking);
+        return group?.Bookings.Count ?? 0;
     }
 
     public async Task<BookingLimit?> GetBookingLimit(Entities.Booking booking)
@@ -78,10 +104,47 @@ public class BookDomainService(
     {
         var booking = await bookingRepository.FindFirst(new GetBookingById(bookingId));
         if (booking == null)
-            throw new DomainRuleException("Не существует бронирования с таким индефекатором");
+            throw DomainRuleException.NotFound("Не существует бронирования с таким индефекатором");
         if (booking.Status != BookingStatus.Waiting)
             throw new DomainRuleException($"Бронирования уже в статусе {booking.Status.GetDisplayName()}");
-        booking.Status = BookingStatus.Canceled;
+        booking.CancelBooking();
         await bookingRepository.Update(booking);
+    }
+
+    public async Task PaidBooking(Guid bookingId, decimal amount)
+    {
+        await CheckBookingPayable(bookingId, amount);
+        var booking = await bookingRepository.FindFirst(new GetBookingById(bookingId));
+        booking!.PaidBooking();
+        using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+        {
+            await bookingRepository.Update(booking);
+            var bookingGroup = await GetBookingGroup(booking!);
+
+            if (bookingGroup == null)
+            {
+                var index = bookingGroup!.Bookings.ToList().FindIndex(b => b.Id == booking.Id);
+                bookingGroup.Bookings[index] = booking;
+                bookingGroup!.CheckStarted();
+                await bookingGroupRepository.Update(bookingGroup);
+            }
+
+            transactionScope.Complete();
+        }
+    }
+
+    public async Task CheckBookingPayable(Guid bookingId, decimal amount)
+    {
+        var booking = await bookingRepository.FindFirst(new GetBookingById(bookingId));
+        if (booking == null)
+            throw DomainRuleException.NotFound("Не существует бронирования с таким индефекатором");
+        if (!booking.IsWaitingPayment())
+            throw new DomainRuleException("Не правильный статус бронирования для оплаты !",
+                (int)BookingExceptionStatus.InvalidPaymentStatus);
+        if (booking.BookingType.CostInTiyn != amount)
+        {
+            throw new DomainRuleException("Не правильная сумма оплаты !",
+                (int)BookingExceptionStatus.InvalidAmount);
+        }
     }
 }

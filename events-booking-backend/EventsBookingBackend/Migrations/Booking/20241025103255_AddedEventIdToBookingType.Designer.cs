@@ -3,6 +3,7 @@ using System;
 using EventsBookingBackend.Infrastructure.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventsBookingBackend.Migrations.Booking
 {
     [DbContext(typeof(BookingDbContext))]
-    partial class BookingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241025103255_AddedEventIdToBookingType")]
+    partial class AddedEventIdToBookingType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,10 +34,6 @@ namespace EventsBookingBackend.Migrations.Booking
                         .HasColumnType("uuid")
                         .HasColumnName("id")
                         .HasDefaultValueSql("uuid_generate_v4()");
-
-                    b.Property<Guid?>("BookingGroupId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("booking_group_id");
 
                     b.Property<Guid>("BookingTypeId")
                         .HasColumnType("uuid")
@@ -67,9 +66,6 @@ namespace EventsBookingBackend.Migrations.Booking
 
                     b.HasKey("Id")
                         .HasName("pk_bookings");
-
-                    b.HasIndex("BookingGroupId")
-                        .HasDatabaseName("ix_bookings_booking_group_id");
 
                     b.HasIndex("BookingTypeId")
                         .HasDatabaseName("ix_bookings_booking_type_id");
@@ -115,57 +111,6 @@ namespace EventsBookingBackend.Migrations.Booking
                         .HasDatabaseName("ix_booking_events_is_deleted");
 
                     b.ToTable("booking_events", "bookings");
-                });
-
-            modelBuilder.Entity("EventsBookingBackend.Domain.Booking.Entities.BookingGroup", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<Guid>("BookingTypeId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("booking_type_id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("end_date");
-
-                    b.Property<Guid>("EventId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("event_id");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("status");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
-
-                    b.Property<string>("UserOptions")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("user_options");
-
-                    b.HasKey("Id")
-                        .HasName("pk_booking_groups");
-
-                    b.HasIndex("BookingTypeId", "EventId", "UserOptions")
-                        .IsUnique()
-                        .HasDatabaseName("ix_booking_groups_booking_type_id_event_id_user_options");
-
-                    b.ToTable("booking_groups", "bookings");
                 });
 
             modelBuilder.Entity("EventsBookingBackend.Domain.Booking.Entities.BookingLimit", b =>
@@ -283,10 +228,6 @@ namespace EventsBookingBackend.Migrations.Booking
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<int>("DurationInDays")
-                        .HasColumnType("integer")
-                        .HasColumnName("duration_in_days");
-
                     b.Property<Guid?>("EventId")
                         .HasColumnType("uuid")
                         .HasColumnName("event_id");
@@ -318,9 +259,9 @@ namespace EventsBookingBackend.Migrations.Booking
                     b.HasIndex("IsDeleted")
                         .HasDatabaseName("ix_booking_types_is_deleted");
 
-                    b.HasIndex("CategoryId", "EventId", "Order")
+                    b.HasIndex("CategoryId", "Order")
                         .IsUnique()
-                        .HasDatabaseName("ix_booking_types_category_id_event_id_order");
+                        .HasDatabaseName("ix_booking_types_category_id_order");
 
                     b.ToTable("booking_types", "bookings");
                 });
@@ -370,11 +311,6 @@ namespace EventsBookingBackend.Migrations.Booking
 
             modelBuilder.Entity("EventsBookingBackend.Domain.Booking.Entities.Booking", b =>
                 {
-                    b.HasOne("EventsBookingBackend.Domain.Booking.Entities.BookingGroup", "BookingGroup")
-                        .WithMany("Bookings")
-                        .HasForeignKey("BookingGroupId")
-                        .HasConstraintName("fk_bookings_booking_groups_booking_group_id");
-
                     b.HasOne("EventsBookingBackend.Domain.Booking.Entities.BookingType", "BookingType")
                         .WithMany()
                         .HasForeignKey("BookingTypeId")
@@ -389,23 +325,9 @@ namespace EventsBookingBackend.Migrations.Booking
                         .IsRequired()
                         .HasConstraintName("fk_bookings_booking_events_event_id");
 
-                    b.Navigation("BookingGroup");
-
                     b.Navigation("BookingType");
 
                     b.Navigation("Event");
-                });
-
-            modelBuilder.Entity("EventsBookingBackend.Domain.Booking.Entities.BookingGroup", b =>
-                {
-                    b.HasOne("EventsBookingBackend.Domain.Booking.Entities.BookingType", "BookingType")
-                        .WithMany()
-                        .HasForeignKey("BookingTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_booking_groups_booking_types_booking_type_id");
-
-                    b.Navigation("BookingType");
                 });
 
             modelBuilder.Entity("EventsBookingBackend.Domain.Booking.Entities.BookingLimit", b =>
@@ -539,11 +461,6 @@ namespace EventsBookingBackend.Migrations.Booking
             modelBuilder.Entity("EventsBookingBackend.Domain.Booking.Entities.Booking", b =>
                 {
                     b.Navigation("BookingOptions");
-                });
-
-            modelBuilder.Entity("EventsBookingBackend.Domain.Booking.Entities.BookingGroup", b =>
-                {
-                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("EventsBookingBackend.Domain.Booking.Entities.BookingType", b =>

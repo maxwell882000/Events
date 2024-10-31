@@ -23,12 +23,13 @@ services:
       - sportia-network
 
   postgres:
-    image: postgres:13  # Adjust the PostgreSQL version if needed
+    image: postgres:13
     container_name: postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: yourpassword
       POSTGRES_DB: events_booking
+      TZ: Asia/Tashkent
     volumes:
       - pgdata:/var/lib/postgresql/data  # Persist data between container runs
     networks:
@@ -54,7 +55,7 @@ services:
       dockerfile: ./EventsBookingJob/Dockerfile
     environment:
       - Database__Postgresql__ConnectionString=Host=postgres;Port=5432;Username=postgres;Password=yourpassword;Database=events_booking;Pooling=true;
-      - TZ=Asia/Tashkent  # Set the timezone to Tashkent
+      - TZ=Asia/Tashkent
     depends_on:
       - postgres
     networks:
@@ -70,7 +71,7 @@ services:
       - PaymeOption__Login=${PAYME_LOGIN}
       - PaymeOption__Password=${PAYME_PASSWORD}
       - HostOption__BaseUrl=https://api.sportia.uz/
-      - TZ=Asia/Tashkent  # Set the timezone to Tashkent
+      - TZ=Asia/Tashkent
     networks:
       - sportia-network
     volumes:

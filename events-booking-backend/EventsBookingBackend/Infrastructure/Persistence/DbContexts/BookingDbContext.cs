@@ -16,6 +16,7 @@ public class BookingDbContext(DbContextOptions<BookingDbContext> options) : Base
         modelBuilder.ApplyConfiguration(new BookingUserOptionConfiguration());
         modelBuilder.ApplyConfiguration(new BookingLimitConfiguration());
         modelBuilder.ApplyConfiguration(new BookingEventConfiguration());
+        modelBuilder.ApplyConfiguration(new BookingGroupConfiguration());
     }
 
     public DbSet<BookingOption> BookingOptions { get; init; }
@@ -24,4 +25,5 @@ public class BookingDbContext(DbContextOptions<BookingDbContext> options) : Base
     public DbSet<BookingLimit> BookingLimits { get; init; }
     public DbSet<BookingUserOption> BookingUserOptions { get; init; }
     public DbSet<BookingEvent> BookingEvents { get; init; }
+    public DbSet<BookingGroup> BookingGroups { get; init; }
 }

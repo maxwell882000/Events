@@ -3,16 +3,20 @@ using EventsBookingBackend.Application.Models.Booking.Requests;
 using EventsBookingBackend.Application.Models.Booking.Responses;
 using EventsBookingBackend.Domain.Booking.Entities;
 using EventsBookingBackend.Domain.Booking.Repositories;
+using EventsBookingBackend.Domain.Booking.Services;
 using EventsBookingBackend.Domain.Booking.Specifications;
 
 namespace EventsBookingBackend.Application.Services.Book;
 
-public class BookingTypeService(IMapper mapper, IBookingTypeRepository bookingTypeRepository) : IBookingTypeService
+public class BookingTypeService(
+    IMapper mapper,
+    IBookingTypeDomainService bookingTypeDomainService,
+    IBookingTypeRepository bookingTypeRepository) : IBookingTypeService
 {
     public async Task<List<GetBookingTypeByCategoryResponse>> GetBookingType(GetBookingTypeByCategoryRequest request)
     {
-        var bookingType = await
-            bookingTypeRepository.FindAll(new GetBookingTypeByCategory(request.CategoryId));
+        var bookingType =
+            await bookingTypeDomainService.GetBookingTypesWithOptions(request.CategoryId, request.EventId);
         return mapper.Map<List<GetBookingTypeByCategoryResponse>>(bookingType);
     }
 

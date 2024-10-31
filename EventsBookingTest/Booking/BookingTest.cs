@@ -2,6 +2,7 @@ using System.Globalization;
 using EventsBookingBackend.Domain.Booking.Entities;
 using EventsBookingBackend.Domain.Booking.Repositories;
 using EventsBookingBackend.Domain.Booking.Services;
+using EventsBookingBackend.Domain.Booking.Specifications;
 using EventsBookingBackend.Domain.Booking.ValueObjects;
 using EventsBookingBackend.Infrastructure.Persistence.DbContexts;
 using EventsBookingBackend.Infrastructure.Repositories.Booking;
@@ -19,7 +20,20 @@ public class BookingTest
     {
         DateTime date = new DateTime(2021, 1, 1).AddDays((int)DayOfWeek.Friday);
         var d = DateTime.Now.ToString("dddd dd yyyy");
+    }
 
+    [Test]
+    public async Task TestHashOptions()
+    {
+        var context = new BookingDbContext(DbContextOptionsFactory<BookingDbContext>.Create()!);
+
+        var bookingRepo = BookingFactory.CreateBookingRepository(context);
+        var booking =
+            await bookingRepo.FindFirst(new GetBookingById(Guid.Parse("07097e35-f223-4aa2-9cf3-fb55ae8c3630")));
+
+        var first = booking.HashOptions();
+        var second = booking.HashOptions();
+        Assert.That(second, Is.EqualTo(first));
     }
 
     [Test]

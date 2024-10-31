@@ -19,15 +19,25 @@ public class AccountConverter : JsonConverter<AccountDto>
         bool hasExistingValue,
         JsonSerializer serializer)
     {
-        JObject jsonObject = JObject.Load(reader);
-        if (Guid.TryParse(jsonObject["booking_id"].Value<string>(), out Guid bookingId))
-            return new AccountDto
-            {
-                BookingId = bookingId,
-            };
-        return new AccountDto()
+        try
         {
-            BookingId = Guid.Empty,
-        };
+            JObject jsonObject = JObject.Load(reader);
+            if (Guid.TryParse(jsonObject["booking_id"].Value<string>(), out Guid bookingId))
+                return new AccountDto
+                {
+                    BookingId = bookingId,
+                };
+            return new AccountDto()
+            {
+                BookingId = Guid.Empty,
+            };
+        }
+        catch (Exception e)
+        {
+            return new AccountDto()
+            {
+                BookingId = Guid.Empty,
+            };
+        }
     }
 }

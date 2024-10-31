@@ -7,5 +7,5 @@ public class CreateTransactionRequest
     public string Id { get; set; }
     public long Time { get; set; }
     public long Amount { get; set; }
-    public AccountDto Account { get; set; }
+    public AccountDto? Account { get; set; }
 }

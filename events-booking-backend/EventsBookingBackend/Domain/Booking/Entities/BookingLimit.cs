@@ -9,5 +9,6 @@ public class BookingLimit : BaseEntity
     public Guid? EventId { get; set; }
     public Guid? BookingTypeId { get; set; }
     public int MaxBookings { get; set; }
+    public bool IsSingle => MaxBookings == 1;
     public bool IsDefault => EventId == null;
 }

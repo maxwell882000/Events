@@ -3,6 +3,7 @@ using System;
 using EventsBookingBackend.Infrastructure.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventsBookingBackend.Migrations.Booking
 {
     [DbContext(typeof(BookingDbContext))]
-    partial class BookingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241027072239_AddedBookingGroup")]
+    partial class AddedBookingGroup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,6 +156,10 @@ namespace EventsBookingBackend.Migrations.Booking
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
                     b.Property<string>("UserOptions")
                         .IsRequired()
                         .HasColumnType("text")
@@ -161,9 +168,8 @@ namespace EventsBookingBackend.Migrations.Booking
                     b.HasKey("Id")
                         .HasName("pk_booking_groups");
 
-                    b.HasIndex("BookingTypeId", "EventId", "UserOptions")
-                        .IsUnique()
-                        .HasDatabaseName("ix_booking_groups_booking_type_id_event_id_user_options");
+                    b.HasIndex("BookingTypeId")
+                        .HasDatabaseName("ix_booking_groups_booking_type_id");
 
                     b.ToTable("booking_groups", "bookings");
                 });

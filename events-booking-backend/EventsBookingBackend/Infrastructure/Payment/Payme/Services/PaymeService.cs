@@ -2,9 +2,12 @@ using System.Transactions;
 using AutoMapper;
 using EventsBookingBackend.Api.ControllerOptions.Types;
 using EventsBookingBackend.Domain.Booking.Entities;
+using EventsBookingBackend.Domain.Booking.Exceptions;
 using EventsBookingBackend.Domain.Booking.Repositories;
+using EventsBookingBackend.Domain.Booking.Services;
 using EventsBookingBackend.Domain.Booking.Specifications;
 using EventsBookingBackend.Domain.Booking.ValueObjects;
+using EventsBookingBackend.Domain.Common.Exceptions;
 using EventsBookingBackend.Infrastructure.Payment.Payme.Entities;
 using EventsBookingBackend.Infrastructure.Payment.Payme.Errors;
 using EventsBookingBackend.Infrastructure.Payment.Payme.Models.Requests;
@@ -17,6 +20,7 @@ namespace EventsBookingBackend.Infrastructure.Payment.Payme.Services;
 
 public class PaymeService(
     IBookingRepository bookingRepository,
+    IBookingDomainService bookingDomainService,
     ITransactionRepository transactionRepository,
     IMapper mapper)
     : IPaymeService
@@ -26,33 +30,49 @@ public class PaymeService(
         try
         {
             object? response = null;
-            switch (payment.Method)
+            try
             {
-                case PaymeRequest.Methods.CreateTransaction:
-                    response = await CreateTransaction((payment.P as CreateTransactionRequest)!);
-                    break;
-                case PaymeRequest.Methods.CheckPerformTransaction:
-                    response = await CheckPerformTransaction((payment.P as CheckPerformTransactionRequest)!);
-                    break;
-                case PaymeRequest.Methods.PerformTransaction:
-                    response = await PerformTransaction((payment.P as PerformTransactionRequest)!);
-                    break;
-                case PaymeRequest.Methods.CancelTransaction:
-                    response = await CancelTransaction((payment.P as CancelTransactionRequest)!);
-                    break;
-                case PaymeRequest.Methods.CheckTransaction:
-                    response = await CheckTransaction((payment.P as CheckTransactionRequest)!);
-                    break;
-                case PaymeRequest.Methods.GetStatement:
-                    response = await GetStatement((payment.P as GetStatementRequest)!);
-                    break;
-            }
+                switch (payment.Method)
+                {
+                    case PaymeRequest.Methods.CreateTransaction:
+                        response = await CreateTransaction((payment.P as CreateTransactionRequest)!);
+                        break;
+                    case PaymeRequest.Methods.CheckPerformTransaction:
+                        response = await CheckPerformTransaction((payment.P as CheckPerformTransactionRequest)!);
+                        break;
+                    case PaymeRequest.Methods.PerformTransaction:
+                        response = await PerformTransaction((payment.P as PerformTransactionRequest)!);
+                        break;
+                    case PaymeRequest.Methods.CancelTransaction:
+                        response = await CancelTransaction((payment.P as CancelTransactionRequest)!);
+                        break;
+                    case PaymeRequest.Methods.CheckTransaction:
+                        response = await CheckTransaction((payment.P as CheckTransactionRequest)!);
+                        break;
+                    case PaymeRequest.Methods.GetStatement:
+                        response = await GetStatement((payment.P as GetStatementRequest)!);
+                        break;
+                }
 
-            return new PaymeSuccessResponse()
+                return new PaymeSuccessResponse()
+                {
+                    Id = payment.Id,
+                    Result = response
+                };
+            }
+            catch (DomainRuleException e)
             {
-                Id = payment.Id,
-                Result = response
-            };
+                switch (e.Status)
+                {
+                    case (int)BookingExceptionStatus.InvalidAmount:
+                        throw PaymeMessageException.InvalidAmount();
+
+                    case (int)BookingExceptionStatus.InvalidPaymentStatus:
+                        throw PaymeMessageException.InvalidBookingStatus();
+                    default:
+                        throw PaymeMessageException.InvalidBookingId();
+                }
+            }
         }
         catch (PaymeMessageException e)
         {
@@ -118,16 +138,8 @@ public class PaymeService(
 
     private async Task<CheckPerformTransactionResponse> CheckPerformTransaction(CheckPerformTransactionRequest request)
     {
-        var booking = await bookingRepository.FindFirst(new GetBookingById(request.Account?.BookingId ?? Guid.Empty));
-        if (booking == null)
-            throw PaymeMessageException.InvalidBookingId();
-        if (!(booking.Status == BookingStatus.Waiting || booking.Status == BookingStatus.TransactionCreated))
-            throw PaymeMessageException.InvalidBookingStatus();
-        if (booking.BookingType.CostInTiyn != request.Amount)
-        {
-            throw PaymeMessageException.InvalidAmount();
-        }
-
+        await bookingDomainService.CheckBookingPayable(request.Account?.BookingId ?? Guid.Empty,
+            request.Amount ?? 0);
         return CheckPerformTransactionResponse.AllowRequest();
     }
 
@@ -155,9 +167,8 @@ public class PaymeService(
 
         using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
         {
-            booking.Status = BookingStatus.Paid;
+            await bookingDomainService.PaidBooking(transaction.Account.BookingId, transaction.Amount);
             transaction.CompletedTransaction();
-            await bookingRepository.Update(booking);
             await transactionRepository.Update(transaction);
             transactionScope.Complete();
             return mapper.Map<PerformTransactionResponse>(transaction);
@@ -172,8 +183,9 @@ public class PaymeService(
             var response = await CheckPerformTransaction(mapper.Map<CheckPerformTransactionRequest>(request));
             if (response.Allow)
             {
-                Booking? booking = await bookingRepository.FindFirst(new GetBookingById(request.Account.BookingId));
-                if (booking!.Status == BookingStatus.TransactionCreated)
+                Booking? booking =
+                    await bookingRepository.FindFirst(new GetBookingById(request.Account!.BookingId));
+                if (booking!.Status == BookingStatus.PreparingToPay)
                 {
                     throw PaymeMessageException.TransactionCreated();
                 }
@@ -183,7 +195,7 @@ public class PaymeService(
                 using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
                     await transactionRepository.Create(newTransactionDetail);
-                    booking.Status = BookingStatus.TransactionCreated;
+                    booking.Status = BookingStatus.PreparingToPay;
                     await bookingRepository.Update(booking);
                     transactionScope.Complete();
                 }

@@ -11,6 +11,10 @@ public class UserProfile : Profile
         CreateMap<Domain.User.Entities.User, GetUserProfileResponse>();
 
         CreateMap<Domain.Booking.Entities.Booking, GetUserBookedEventResponse>()
+            .ForMember(e => e.Status, opt
+                => opt.MapFrom(src => src.Status))
+            .ForMember(e => e.GroupStatus, opt
+                => opt.MapFrom(src => src.BookingGroup != null ? src.BookingGroup.Status : BookingGroupStatus.NoStatus))
             .ForMember(e => e.Type, opt
                 => opt.MapFrom(src => src.BookingType.Label))
             .ForMember(e => e.Name, opt

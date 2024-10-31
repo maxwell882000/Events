@@ -91,7 +91,6 @@ public static class ApplicationDi
             {
                 options.Conventions.Add(new RouteTokenTransformerConvention(new SnakeCaseRoutingConvention()));
                 options.Filters.Add<ValidationResponseFilter>();
-                options.Filters.Add<PaymeExceptionFilter>();
             })
             .AddNewtonsoftJson(options =>
             {

@@ -1,3 +1,5 @@
+using EventsBookingBackend.Domain.Booking.ValueObjects;
+
 namespace EventsBookingBackend.Application.Models.User.Responses;
 
 public class GetUserBookedEventResponse
@@ -7,4 +9,6 @@ public class GetUserBookedEventResponse
     public string Type { get; set; }
     public string Options { get; set; }
     public decimal Cost { get; set; }
+    public BookingStatus Status { get; set; }
+    public BookingGroupStatus GroupStatus { get; set; }
 }
