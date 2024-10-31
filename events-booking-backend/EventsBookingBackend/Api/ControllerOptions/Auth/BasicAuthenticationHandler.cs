@@ -18,6 +18,7 @@ public class BasicAuthenticationHandler<T>(
 {
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
+        var log = logger?.CreateLogger<BasicAuthenticationHandler<T>>();
         if (!Request.Headers.ContainsKey("Authorization"))
             return await CreateFailureResponse("Missing Authorization Header");
 
@@ -28,6 +29,8 @@ public class BasicAuthenticationHandler<T>(
             var credentials = Encoding.UTF8.GetString(credentialBytes).Split(':');
             var username = credentials[0];
             var password = credentials[1];
+            log.LogInformation(
+                $"Username come {username}. Password {password}. In options  Username {option.Value.Login}. Password {option.Value.Password}");
 
             // Validate credentials here (e.g., check against a database or predefined credentials)
             if (username != option.Value.Login && password != option.Value.Password)
