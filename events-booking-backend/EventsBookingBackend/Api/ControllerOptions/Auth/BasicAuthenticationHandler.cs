@@ -30,10 +30,10 @@ public class BasicAuthenticationHandler<T>(
             var username = credentials[0];
             var password = credentials[1];
             log.LogInformation(
-                $"Username come {username}. Password {password}. In options  Username {option.Value.Login}. Password {option.Value.Password}");
+                $"Username {username}. Password {password}. In options  Username {option.Value.Paycom}. Password {option.Value.Password}");
 
             // Validate credentials here (e.g., check against a database or predefined credentials)
-            if (username != option.Value.Login && password != option.Value.Password)
+            if (username != option.Value.Paycom && password != option.Value.Password)
             {
                 return await CreateFailureResponse("Invalid Username or Password");
             }
