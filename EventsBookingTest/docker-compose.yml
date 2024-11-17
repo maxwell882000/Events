@@ -18,7 +18,7 @@
       - certs:/letsencrypt  # Persistent storage for Let's Encrypt certificates
       - /var/run/docker.sock:/var/run/docker.sock  # For Traefik to access Docker events
     networks:
-      - sportia-network
+      - traefik-network
 
   postgres:
     image: postgres:13
@@ -31,7 +31,7 @@
     volumes:
       - pgdata:/var/lib/postgresql/data  # Persist data between container runs
     networks:
-      - sportia-network
+      - traefik-network
     ports:
       - "5432:5432"  # Expose PostgreSQL port
 
@@ -45,7 +45,7 @@
     depends_on:
       - postgres
     networks:
-      - sportia-network
+      - traefik-network
 
   eventsbookingjob:
     build:
@@ -57,7 +57,7 @@
     depends_on:
       - postgres
     networks:
-      - sportia-network
+      - traefik-network
 
   eventsbookingbackend:
     build:
@@ -72,7 +72,7 @@
       - HostOption__BaseUrl=https://api.sportia.uz/
       - TZ=Asia/Tashkent
     networks:
-      - sportia-network
+      - traefik-network
     volumes:
       - ./../events-booking-backend/EventsBookingBackend/wwwroot:/app/wwwroot
     labels:
@@ -89,5 +89,5 @@ volumes:
   certs:
 
 networks:
-  sportia-network:
+  traefik-network:
     driver: bridge
