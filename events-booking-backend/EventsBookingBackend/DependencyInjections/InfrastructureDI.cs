@@ -6,9 +6,10 @@ using EventsBookingBackend.Domain.Booking.Repositories;
 using EventsBookingBackend.Domain.Category.Repositories;
 using EventsBookingBackend.Domain.Event.Repositories;
 using EventsBookingBackend.Domain.File.Repositories;
-using EventsBookingBackend.Domain.Files.Services;
+using EventsBookingBackend.Domain.File.Services;
 using EventsBookingBackend.Domain.Review.Repositories;
 using EventsBookingBackend.Domain.User.Repositories;
+using EventsBookingBackend.Infrastructure.Options.File;
 using EventsBookingBackend.Infrastructure.Payment.Payme.Option;
 using EventsBookingBackend.Infrastructure.Persistence.DbContexts;
 using EventsBookingBackend.Infrastructure.Repositories.Event;
@@ -19,7 +20,6 @@ using EventsBookingBackend.Infrastructure.Repositories.Event;
 using EventsBookingBackend.Infrastructure.Repositories.Review;
 using EventsBookingBackend.Infrastructure.Repositories.User;
 using EventsBookingBackend.Infrastructure.Services.File;
-using EventsBookingBackend.Shared.Options.File;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -200,7 +200,7 @@ public static class InfrastructureDi
     {
         #region File
 
-        services.AddTransient<IFileService, FileService>();
+        services.AddTransient<IFileDomainService, FileDomainService>();
 
         #endregion
     }

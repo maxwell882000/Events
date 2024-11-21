@@ -1,5 +1,5 @@
 using EventsBookingBackend.Domain.File.Repositories;
-using EventsBookingBackend.Shared.Options.File;
+using EventsBookingBackend.Infrastructure.Options.File;
 using Microsoft.Extensions.Options;
 
 namespace EventsBookingBackend.Infrastructure.Repositories.File;
@@ -15,9 +15,9 @@ public class FileSystemRepository(IOptions<FileOption> options, ILogger<FileSyst
             throw new ArgumentException("File is empty");
 
         var filePath = Path.Combine(_storagePath,
-            DateTime.Now + "_" + Guid.NewGuid() + Path.GetExtension(file.FileName));
+            DateTime.Now.ToFileTime() + "_" + Guid.NewGuid() + Path.GetExtension(file.FileName));
 
-        using (var stream = new FileStream(filePath, FileMode.Create))
+        using (var stream = new FileStream(Path.Combine("wwwroot", filePath), FileMode.Create))
         {
             await file.CopyToAsync(stream);
         }

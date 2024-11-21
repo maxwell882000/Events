@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Identity;
 namespace EventsBookingBackend.Application.Services.Auth;
 
 public class AuthService(
-    Microsoft.AspNetCore.Identity.UserManager<Domain.Auth.Entities.Auth?> userManager,
+    Microsoft.AspNetCore.Identity.UserManager<Domain.Auth.Entities.Auth> userManager,
     IUserRepository userRepository,
     SignInManager<Domain.Auth.Entities.Auth> signInManager,
     ILogger<AuthService> logger,
@@ -57,7 +57,6 @@ public class AuthService(
         if (request.Password != request.RepeatPassword)
             throw new AppValidationException("Пароли не совпадают");
 
-        // using var transaction = await dbContext.Database.BeginTransactionAsync();
         using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
         {
             var auth = mapper.Map<Domain.Auth.Entities.Auth>(request);

@@ -1,23 +1,17 @@
 using EventsBookingBackend.Domain.File.Repositories;
-using EventsBookingBackend.Domain.Files.Services;
-using EventsBookingBackend.Shared.Options.File;
-using Microsoft.Extensions.Options;
+using EventsBookingBackend.Domain.File.Services;
 
 namespace EventsBookingBackend.Infrastructure.Services.File;
 
-public class FileService(
-    IOptions<FileOption> options,
+public class FileDomainService(
     IFileDbRepository fileDbRepository,
-    IFileSystemRepository fileSystemRepository) : IFileService
+    IFileSystemRepository fileSystemRepository) : IFileDomainService
 {
-    private readonly string _storagePath = options.Value.StoragePath;
-
     public async Task<string> UploadFileAsync(IFormFile file)
     {
+        var filePath = await fileSystemRepository.UploadFile(file);
         try
         {
-            var filePath = await fileSystemRepository.UploadFile(file);
-
             await fileDbRepository.Create(new Domain.File.Entities.File()
             {
                 FileName = file.FileName,
@@ -29,7 +23,7 @@ public class FileService(
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await fileSystemRepository.RemoveFile(filePath);
             throw;
         }
     }

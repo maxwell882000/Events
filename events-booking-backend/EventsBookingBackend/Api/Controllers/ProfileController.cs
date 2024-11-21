@@ -1,7 +1,9 @@
 using EventsBookingBackend.Application.Common;
+using EventsBookingBackend.Application.Models.User.Requests;
 using EventsBookingBackend.Application.Models.User.Responses;
 using EventsBookingBackend.Application.Services.User;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventsBookingBackend.Api.Controllers;
@@ -23,6 +25,22 @@ public class ProfileController(IUserService userService) : AppBaseController
     {
         var bookings = await userService.GetUserBookedEvents();
         return Ok(bookings);
+    }
+
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [HttpPut("change-avatar")]
+    public async Task<ActionResult<ChangeAvatarResponse>> ChangeAvatar(IFormFile avatar)
+    {
+        return Ok(await userService.ChangeAvatar(avatar));
+    }
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [HttpPut("change-profile")]
+    public async Task<IActionResult> ChangeProfile([FromBody] ChangeProfileRequest request)
+    {
+        await userService.ChangeProfile(request);
+        return Ok();
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]

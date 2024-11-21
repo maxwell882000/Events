@@ -45,8 +45,8 @@ namespace EventsBookingBackend.Infrastructure.Repositories.Common
         public async Task<TEntity?> FindFirst(ISpecification<TEntity>? specification = null)
         {
             if (specification != null)
-                return await specification.Apply(context.Set<TEntity>()).AsNoTracking().FirstOrDefaultAsync();
-            return await DbSet.AsNoTracking().FirstOrDefaultAsync();
+                return await specification.Apply(context.Set<TEntity>()).FirstOrDefaultAsync();
+            return await DbSet.FirstOrDefaultAsync();
         }
     }
 }
