@@ -32,6 +32,13 @@ public class AuthController(IAuthService authService) : AppBaseController
         return SignIn(result);
     }
 
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [HttpPost("logout")]
+    public SignOutResult Logout()
+    {
+        return SignOut();
+    }
+
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpGet("get-user")]
