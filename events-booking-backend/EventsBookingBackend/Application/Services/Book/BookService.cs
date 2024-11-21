@@ -9,6 +9,7 @@ using EventsBookingBackend.Domain.Booking.Services;
 using EventsBookingBackend.Domain.Event.Repositories;
 using EventsBookingBackend.Domain.Event.Specifications;
 using EventsBookingBackend.Infrastructure.Payment.Payme.Option;
+using EventsBookingBackend.Infrastructure.Payment.Payme.Services;
 using Microsoft.Extensions.Options;
 
 namespace EventsBookingBackend.Application.Services.Book;
@@ -17,7 +18,7 @@ public class BookService(
     IBookingDomainService bookingDomainService,
     IEventRepository eventRepository,
     IAuthService authService,
-    IOptions<PaymeOption> paymeOption,
+    IPaymeGenerateUrlService paymeGenerateUrlService,
     IMapper mapper) : IBookService
 {
     public async Task<CreateBookingResponse> CreateBooking(CreateBookingRequest request)
@@ -52,11 +53,7 @@ public class BookService(
 
     private string GeneratePaymeUrl(CreateBookingRequest request, Booking booking)
     {
-        var merchantId = paymeOption.Value.MerchantId;
-        string parameters = $"m={merchantId};ac.booking_id={booking.Id};a={booking.BookingType.CostInTiyn}";
-        string base64EncodedParameters = Convert.ToBase64String(Encoding.UTF8.GetBytes(parameters));
-
-        return $"https://checkout.paycom.uz/{base64EncodedParameters}";
+        return paymeGenerateUrlService.GenerateUrl(booking.Id.ToString(), booking.BookingType.CostInTiyn);
     }
 
     public async Task CancelBooking(CancelBookingRequest request)

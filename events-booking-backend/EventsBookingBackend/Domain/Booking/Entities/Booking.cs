@@ -57,7 +57,6 @@ public class Booking : BaseEntity
     public void CancelBooking()
     {
         Status = BookingStatus.Canceled;
-        BookingGroupId = null;
     }
 
     public bool IsWaitingPayment()

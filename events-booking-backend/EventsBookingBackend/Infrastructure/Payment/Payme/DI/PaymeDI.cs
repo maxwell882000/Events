@@ -9,6 +9,7 @@ public static class PaymeDI
     public static void AddPayme(this IServiceCollection services)
     {
         services.AddTransient<IPaymeService, PaymeService>();
+        services.AddTransient<IPaymeGenerateUrlService, PaymeGenerateUrlService>();
         services.AddTransient<ITransactionRepository, TransactionRepository>();
     }
 }

@@ -8,7 +8,8 @@ public class GetUserBookedEventResponse
     public string Name { get; set; }
     public string Type { get; set; }
     public string Options { get; set; }
-    public decimal Cost { get; set; }
+    public long Cost { get; set; }
     public BookingStatus Status { get; set; }
     public BookingGroupStatus GroupStatus { get; set; }
+    public string? PaymentUrl { get; set; } = null;
 }

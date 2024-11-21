@@ -7,12 +7,14 @@ using EventsBookingBackend.Application.Models.User.Responses;
 using EventsBookingBackend.Application.Services.Auth;
 using EventsBookingBackend.Domain.Booking.Repositories;
 using EventsBookingBackend.Domain.Booking.Specifications;
+using EventsBookingBackend.Domain.Booking.ValueObjects;
 using EventsBookingBackend.Domain.Common.ValueObjects;
 using EventsBookingBackend.Domain.Event.Repositories;
 using EventsBookingBackend.Domain.Event.Specifications;
 using EventsBookingBackend.Domain.File.Services;
 using EventsBookingBackend.Domain.User.Repositories;
 using EventsBookingBackend.Domain.User.Specifactions;
+using EventsBookingBackend.Infrastructure.Payment.Payme.Services;
 using Microsoft.AspNetCore.Identity;
 
 namespace EventsBookingBackend.Application.Services.User;
@@ -25,6 +27,7 @@ public class UserService(
     IHttpContextAccessor httpContextAccessor,
     UserManager<Domain.Auth.Entities.Auth> userManager,
     IBookingRepository bookingRepository,
+    IPaymeGenerateUrlService paymeGenerateUrlService,
     IMapper mapper) : IUserService
 {
     public async Task<GetUserProfileResponse> GetUserProfile()
@@ -41,7 +44,11 @@ public class UserService(
     {
         var bookings =
             await bookingRepository.FindAll(new GetUserBookedEvents((Guid)authService.GetCurrentAuthUserId()!));
-        return mapper.Map<List<GetUserBookedEventResponse>>(bookings);
+        var results = mapper.Map<List<GetUserBookedEventResponse>>(bookings);
+        foreach (var result in results)
+            if (result.Status == BookingStatus.Waiting)
+                result.PaymentUrl = paymeGenerateUrlService.GenerateUrl(result.Id.ToString(), result.Cost * 100);
+        return results;
     }
 
     public async Task<List<GetUserLikedEventResponse>> GetUserLikedEvents()

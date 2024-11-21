@@ -26,13 +26,23 @@ public class BookingGroup : BaseEntity
         };
     }
 
+    public int CurrentBookingCount()
+    {
+        return Bookings.Count(e => e.Status != BookingStatus.Canceled);
+    }
+
+    public bool IsMaxLimitReached(BookingLimit? bookingLimit)
+    {
+        return CurrentBookingCount() >= bookingLimit?.MaxBookings;
+    }
+
     public void SetStatus(BookingLimit? bookingLimit)
     {
         if (bookingLimit?.IsSingle == true)
         {
             Status = BookingGroupStatus.NoStatus;
         }
-        else if (Bookings.Count == bookingLimit?.MaxBookings)
+        else if (IsMaxLimitReached(bookingLimit))
         {
             Status = BookingGroupStatus.Filled;
         }
@@ -42,9 +52,15 @@ public class BookingGroup : BaseEntity
         }
     }
 
-    public void CheckStarted()
+    public bool IsStarted()
     {
-        if (Bookings.All(b => b.Status == BookingStatus.Paid))
+        return Status == BookingGroupStatus.Started || Status == BookingGroupStatus.Finished;
+    }
+
+    public void SetStarted()
+    {
+        if (Bookings.All(b => b.Status is BookingStatus.Paid or BookingStatus.Canceled) &&
+            Status == BookingGroupStatus.Filled)
         {
             Status = BookingGroupStatus.Started;
             EndDate = DateTime.Now.AddDays(BookingType.DurationInDays);

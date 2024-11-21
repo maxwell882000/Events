@@ -28,9 +28,9 @@ public class BookDomainService(
             throw new DomainRuleException("Вы уже забранировали !");
         }
 
-        var bookingCount = await SameBookingsCount(booking);
+        var bookingCount = await GetBookingGroup(booking);
 
-        if (currentLimit != null && bookingCount >= currentLimit.MaxBookings)
+        if (bookingCount?.IsMaxLimitReached(currentLimit) == true)
         {
             throw new DomainRuleException("Количество забранированных мест достигло лимита !");
         }
@@ -91,7 +91,7 @@ public class BookDomainService(
     public async Task<int> SameBookingsCount(Entities.Booking booking)
     {
         var group = await GetBookingGroup(booking);
-        return group?.Bookings.Count ?? 0;
+        return group?.CurrentBookingCount() ?? 0;
     }
 
     public async Task<BookingLimit?> GetBookingLimit(Entities.Booking booking)
@@ -103,11 +103,23 @@ public class BookDomainService(
     public async Task CancelBooking(Guid bookingId)
     {
         var booking = await bookingRepository.FindFirst(new GetBookingById(bookingId));
+
         if (booking == null)
             throw DomainRuleException.NotFound("Не существует бронирования с таким индефекатором");
-        if (booking.Status != BookingStatus.Waiting)
+
+        if (booking.Status == BookingStatus.Canceled)
             throw new DomainRuleException($"Бронирования уже в статусе {booking.Status.GetDisplayName()}");
+
+        if (booking.BookingGroup?.IsStarted() == true)
+            throw new DomainRuleException($"Бронирования не может быть отменено !");
+        var bookingGroup = booking.BookingGroup;
         booking.CancelBooking();
+        if (bookingGroup != null)
+        {
+            var bookingLimit = await GetBookingLimit(booking);
+            bookingGroup.SetStatus(bookingLimit);
+        }
+
         await bookingRepository.Update(booking);
     }
 
@@ -125,7 +137,7 @@ public class BookDomainService(
             {
                 var index = bookingGroup!.Bookings.ToList().FindIndex(b => b.Id == booking.Id);
                 bookingGroup.Bookings[index] = booking;
-                bookingGroup!.CheckStarted();
+                bookingGroup!.SetStarted();
                 await bookingGroupRepository.Update(bookingGroup);
             }
 
