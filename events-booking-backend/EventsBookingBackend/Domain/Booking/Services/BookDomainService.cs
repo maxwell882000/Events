@@ -127,20 +127,11 @@ public class BookDomainService(
     {
         await CheckBookingPayable(bookingId, amount);
         var booking = await bookingRepository.FindFirst(new GetBookingById(bookingId));
-        booking!.PaidBooking();
         using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
         {
+            booking!.PaidBooking();
+            booking.BookingGroup?.SetStarted();
             await bookingRepository.Update(booking);
-            var bookingGroup = await GetBookingGroup(booking!);
-
-            if (bookingGroup == null)
-            {
-                var index = bookingGroup!.Bookings.ToList().FindIndex(b => b.Id == booking.Id);
-                bookingGroup.Bookings[index] = booking;
-                bookingGroup!.SetStarted();
-                await bookingGroupRepository.Update(bookingGroup);
-            }
-
             transactionScope.Complete();
         }
     }
