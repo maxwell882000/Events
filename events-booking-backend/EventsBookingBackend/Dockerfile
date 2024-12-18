@@ -1,14 +1,7 @@
 ﻿# Use ASP.NET runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-# Set an environment variable for a non-root user ID
-ARG APP_UID=1000
-ENV APP_UID=${APP_UID}
-
-# Create a non-root user and switch to it
-RUN adduser --disabled-password --home /app --uid $APP_UID appuser
-WORKDIR /app
-RUN mkdir -p /app/wwwroot/media && chown -R $APP_UID:$APP_UID /app
 USER $APP_UID
+# Set an environment variable for a non-root user ID
 EXPOSE 8080
 EXPOSE 8081
 
@@ -30,10 +23,10 @@ RUN dotnet publish "EventsBookingBackend.csproj" -c $BUILD_CONFIGURATION -o /app
 # Final stage - run the application
 FROM base AS final
 WORKDIR /app
-
 # Ensure the app directory and its contents have the correct ownership
 COPY --from=publish /app/publish .
 RUN chown -R $APP_UID:$APP_UID /app
+RUN chmod -R 0777 /app/wwwroot
 
 # ENTRYPOINT to run the application
 ENTRYPOINT ["dotnet", "EventsBookingBackend.dll"]
