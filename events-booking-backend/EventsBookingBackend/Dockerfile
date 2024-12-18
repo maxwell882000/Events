@@ -1,6 +1,6 @@
 ﻿# Use ASP.NET runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
+USER root
 # Set an environment variable for a non-root user ID
 EXPOSE 8080
 EXPOSE 8081
@@ -25,7 +25,7 @@ FROM base AS final
 WORKDIR /app
 # Ensure the app directory and its contents have the correct ownership
 COPY --from=publish /app/publish .
-RUN chown -R $APP_UID:$APP_UID /app
+
 RUN chmod -R 0777 /app/wwwroot
 
 # ENTRYPOINT to run the application
