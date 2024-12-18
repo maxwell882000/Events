@@ -1,14 +1,15 @@
 [
   {
+    "id": "0624f00c-aacf-4fca-9140-c8027e964f78",
     "name": "Ташгрэс поле",
     "categoryId": "48c112b1-70f5-4270-8f75-98c74bc48d96",
     "previewImage": {
-      "path": "media/preview.png"
+      "path": "media/first.jpeg"
     },
     "images": [
       {
         "id": 1,
-        "path": "media/preview.png"
+        "path": "media/first.jpeg"
       }
     ],
     "building": {
@@ -64,15 +65,16 @@
     }
   },
   {
+    "id": "0b2ec332-f446-4938-bf21-fb3554bd97da",
     "name": "225 школа поле",
     "categoryId": "48c112b1-70f5-4270-8f75-98c74bc48d96",
     "previewImage": {
-      "path": "media/preview.png"
+      "path": "media/second.jpeg"
     },
     "images": [
       {
         "id": 2,
-        "path": "media/preview.png"
+        "path": "media/second.jpeg"
       }
     ],
     "building": {
@@ -128,15 +130,16 @@
     }
   },
   {
+    "id": "e787b719-65f4-47aa-a12b-47413d32245b",
     "name": "МВЭС поле",
     "categoryId": "48c112b1-70f5-4270-8f75-98c74bc48d96",
     "previewImage": {
-      "path": "media/preview.png"
+      "path": "media/third.jpeg"
     },
     "images": [
       {
         "id": 3,
-        "path": "media/preview.png"
+        "path": "media/third.jpeg"
       }
     ],
     "building": {
@@ -192,15 +195,16 @@
     }
   },
   {
+    "id": "7d636872-c2bf-457e-b265-f8f93b26c5e0",
     "name": "Эко парк поле",
     "categoryId": "48c112b1-70f5-4270-8f75-98c74bc48d96",
     "previewImage": {
-      "path": "media/preview.png"
+      "path": "media/fourth.jpeg"
     },
     "images": [
       {
         "id": 4,
-        "path": "media/preview.png"
+        "path": "media/fourth.jpeg"
       }
     ],
     "building": {

@@ -50,6 +50,7 @@
       },
       "isShowLimit": true,
       "categoryId": "48c112b1-70f5-4270-8f75-98c74bc48d96",
+      "durationIdDays": 35,
       "bookingOptions": [
         {
           "id": "39e8d6e6-ffd3-46e6-8643-6c5660abad29",
@@ -98,7 +99,7 @@
       ]
     },
     "bookingLimit": {
-      "maxBookings": 10
+      "maxBookings": 15
     }
   }
 ]
