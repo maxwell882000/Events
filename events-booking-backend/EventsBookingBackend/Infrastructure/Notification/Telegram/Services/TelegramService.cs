@@ -1,5 +1,6 @@
 using EventsBookingBackend.Infrastructure.Notification.Telegram.Entities;
 using EventsBookingBackend.Infrastructure.Notification.Telegram.Repositories;
+using EventsBookingBackend.Infrastructure.Notification.Telegram.Spec;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -11,10 +12,14 @@ public class TelegramService(ITelegramRepository telegramRepository, ITelegramBo
     public async Task CreateUser(Update update)
     {
         if (update.Message?.From != null)
-            await telegramRepository.Create(new TelegramUser()
-            {
-                ChatId = update.Message.From.Id
-            });
+        {
+            var user = await telegramRepository.FindFirst(new GetByChatIdSpec(update.Message.From.Id));
+            if (user == null)
+                await telegramRepository.Create(new TelegramUser()
+                {
+                    ChatId = update.Message.From.Id
+                });
+        }
     }
 
     public async Task Notify(string message)
