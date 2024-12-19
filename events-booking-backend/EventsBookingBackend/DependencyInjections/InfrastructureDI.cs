@@ -20,6 +20,7 @@ using EventsBookingBackend.Infrastructure.Repositories.Event;
 using EventsBookingBackend.Infrastructure.Repositories.Review;
 using EventsBookingBackend.Infrastructure.Repositories.User;
 using EventsBookingBackend.Infrastructure.Services.File;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -105,6 +106,11 @@ public static class InfrastructureDi
             options.UseNpgsql(connectionString, x =>
                     x.MigrationsHistoryTable(HistoryRepository.DefaultTableName,
                         schema: "payme"))
+                .UseSnakeCaseNamingConvention());
+        services.AddDbContextPool<TelegramDbContext>(options =>
+            options.UseNpgsql(connectionString, x =>
+                    x.MigrationsHistoryTable(HistoryRepository.DefaultTableName,
+                        schema: "telegram"))
                 .UseSnakeCaseNamingConvention());
     }
 
@@ -203,6 +209,31 @@ public static class InfrastructureDi
         services.AddTransient<IFileDomainService, FileDomainService>();
 
         #endregion
+    }
+
+    public static void AddEventBus(this IServiceCollection services, IConfiguration configuration,
+        Func<IBusRegistrationConfigurator, IBusRegistrationConfigurator>? config = null)
+    {
+        services.AddMassTransit(x =>
+        {
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.UseInMemoryOutbox(context);
+
+                cfg.Host(
+                    configuration.GetSection("MessageBrokers:RabbitMQ:Host").Value,
+                    configuration.GetValue<ushort>("MessageBrokers:RabbitMQ:Port"),
+                    configuration.GetSection("MessageBrokers:RabbitMQ:VHost").Value,
+                    h =>
+                    {
+                        h.Username(configuration.GetSection("MessageBrokers:RabbitMQ:Username").Value);
+                        h.Password(configuration.GetSection("MessageBrokers:RabbitMQ:Password").Value);
+                    });
+
+                cfg.ConfigureEndpoints(context);
+            });
+            config?.Invoke(x);
+        });
     }
 
     public static void AddInfraOptions(this IServiceCollection services, IConfiguration configuration)

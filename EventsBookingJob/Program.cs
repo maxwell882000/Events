@@ -1,5 +1,8 @@
 using Coravel;
 using EventsBookingBackend.DependencyInjections;
+using EventsBookingBackend.Domain.Booking.Events;
+using EventsBookingBackend.Infrastructure.Notification.Telegram.Extensions;
+using EventsBookingJob.Consumers.Notification;
 using EventsBookingJob.Job.Booking;
 using EventsBookingJob.Job.Event;
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +15,12 @@ builder.Services.AddDatabases(builder.Configuration);
 builder.Services.AddScheduler();
 builder.Services.AddTransient<AggregateReviewJob>();
 builder.Services.AddTransient<BookingEventJob>();
+builder.Services.AddTelegram(builder.Configuration);
+builder.Services.AddEventBus(builder.Configuration, (x) =>
+{
+    x.AddConsumer<CreateBookingNotificationConsumer>();
+    return x;
+});
 
 var app = builder.Build();
 

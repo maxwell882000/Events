@@ -16,7 +16,14 @@
       "applicationUrl": "http://localhost:5104",
       "environmentVariables": {
         "Database__Postgresql__ConnectionString": "Host=localhost;Port=5433;Username=postgres;Password=123123;Database=events_booking;",
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "TelegramOption__Webhook": "https://6b03-89-236-219-40.ngrok-free.app/api/v1/telegram",
+        "TelegramOption__Api": "8078849422:AAHdRQM9srWbQUJtDfTz8m8J9vffwvMimXE",
+        "MessageBrokers__RabbitMQ__Host": "localhost",
+        "MessageBrokers__RabbitMQ__Password": "w6quaebXPwEMkHAO",
+        "MessageBrokers__RabbitMQ__Port": "5672",
+        "MessageBrokers__RabbitMQ__Username": "user",
+        "MessageBrokers__RabbitMQ__VHost": "/"
       }
     }
   }

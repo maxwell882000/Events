@@ -1,5 +1,6 @@
 using System.Globalization;
 using EventsBookingBackend.DependencyInjections;
+using EventsBookingBackend.Infrastructure.Notification.Telegram.Extensions;
 using EventsBookingBackend.Infrastructure.Payment.Payme.DI;
 using Microsoft.AspNetCore.Localization;
 
@@ -18,16 +19,18 @@ builder.Services.AddApplicationServices();
 builder.Services.AddDomainServices();
 builder.Services.AddCommonExtensions();
 builder.Services.AddServices();
+builder.Services.AddEventBus(builder.Configuration);
 builder.Services.AddAppOptions(builder.Configuration);
 builder.Services.AddInfraOptions(builder.Configuration);
 builder.Services.AddPayme();
+builder.Services.AddTelegram(builder.Configuration);
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowEverything",
         builder =>
         {
             builder
-                .WithOrigins("http://localhost:5173", "https://sportia.uz","https://www.sportia.uz")
+                .WithOrigins("http://localhost:5173", "https://sportia.uz", "https://www.sportia.uz")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
@@ -55,6 +58,7 @@ app.UseSwaggerUI(c => c.DisplayRequestDuration());
 
 // Configure the HTTP request pipeline.
 var supportedCultures = new[] { new CultureInfo("ru-RU") };
+
 app.UseRequestLocalization(new RequestLocalizationOptions
 {
     DefaultRequestCulture = new RequestCulture("ru-RU"),
@@ -74,5 +78,6 @@ app.UseAuthentication();
 app.MapControllers();
 
 await app.UseMigration();
+await app.UseWebhook(builder.Configuration);
 
 app.Run();

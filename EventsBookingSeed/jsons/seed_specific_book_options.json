@@ -1,0 +1,106 @@
+[
+  {
+    "bookingType": {
+      "label": "На команду",
+      "order": 2,
+      "cost": 100000,
+      "eventId": "0b2ec332-f446-4938-bf21-fb3554bd97da",
+      "categoryId": "48c112b1-70f5-4270-8f75-98c74bc48d96",
+      "icon": {
+        "path": "media/team.svg"
+      },
+      "bookingOptions": [
+        {
+          "label": "Выберите день",
+          "order": 1,
+          "type": 1
+        },
+        {
+          "label": "Время игры",
+          "type": 0,
+          "order": 2,
+          "bookingOptionValues": [
+            {
+              "value": "17:00 - 19:00",
+              "order": 1
+            },
+            {
+              "value": "19:00 - 21:00",
+              "order": 2
+            },
+            {
+              "value": "21:00 - 23:00",
+              "order": 3
+            }
+          ]
+        }
+      ]
+    },
+    "bookingLimit": {
+      "maxBookings": 1
+    }
+  },
+  {
+    "bookingType": {
+      "id": "b6496f7d-4edd-4756-b987-587bf621e863",
+      "order": 1,
+      "label": "На одного",
+      "eventId": "0b2ec332-f446-4938-bf21-fb3554bd97da",
+      "cost": 100000,
+      "icon": {
+        "path": "media/user.svg"
+      },
+      "isShowLimit": true,
+      "categoryId": "48c112b1-70f5-4270-8f75-98c74bc48d96",
+      "bookingOptions": [
+        {
+          "id": "39e8d6e6-ffd3-46e6-8643-6c5660abad29",
+          "label": "Дни игры",
+          "order": 1,
+          "type": 0,
+          "bookingOptionValues": [
+            {
+              "value": "Понедельник - Среда",
+              "order": 1
+            },
+            {
+              "value": "Вторник - Четверг",
+              "order": 2
+            },
+            {
+              "value": "Среда - Пятница",
+              "order": 3
+            },
+            {
+              "value": "Суббота - Воскресенье",
+              "order": 4
+            }
+          ]
+        },
+        {
+          "id": "235250bd-8427-4543-9b06-c2c92e771563",
+          "label": "Время игры",
+          "order": 2,
+          "type": 0,
+          "bookingOptionValues": [
+            {
+              "value": "17:00 - 19:00",
+              "order": 1
+            },
+            {
+              "value": "19:00 - 21:00",
+              "order": 2
+            },
+            {
+              "value": "21:00 - 23:00",
+              "order": 3
+            }
+          ]
+        }
+      ]
+    },
+    "bookingLimit": {
+      "maxBookings": 10
+    }
+  }
+]

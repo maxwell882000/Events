@@ -15,4 +15,9 @@
         <PackageReference Include="coravel" Version="5.0.4"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Consumers\Booking\" />
+      <Folder Include="Consumers\Review\" />
+    </ItemGroup>
+
 </Project>

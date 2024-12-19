@@ -31,6 +31,13 @@ public class BookingGroup : BaseEntity
         return Bookings.Count(e => e.Status != BookingStatus.Canceled);
     }
 
+    public void AddBooking(Booking booking, BookingLimit? currentLimit)
+    {
+        Bookings.Add(booking);
+        SetStatus(currentLimit);
+        booking.BookingGroupId = Id;
+    }
+
     public bool IsMaxLimitReached(BookingLimit? bookingLimit)
     {
         return CurrentBookingCount() >= bookingLimit?.MaxBookings;
@@ -59,6 +66,8 @@ public class BookingGroup : BaseEntity
 
     public void SetStarted()
     {
+        // because we not deleting Canceled booking could have user that canceled but we ensure that all paid is collected
+        // due to the fact that Group status is filled
         if (Bookings.All(b => b.Status is BookingStatus.Paid or BookingStatus.Canceled) &&
             Status == BookingGroupStatus.Filled)
         {

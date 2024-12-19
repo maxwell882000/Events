@@ -122,8 +122,7 @@ public class PaymeService(
             {
                 if (booking.Status != BookingStatus.Canceled)
                 {
-                    booking.Status = BookingStatus.Canceled;
-                    await bookingRepository.Update(booking);
+                    await bookingDomainService.CancelBooking(booking.Id);
                 }
 
                 await transactionRepository.Update(transaction);

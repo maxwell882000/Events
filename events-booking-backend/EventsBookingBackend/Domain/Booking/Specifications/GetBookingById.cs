@@ -11,6 +11,7 @@ public class GetBookingById(Guid bookingId) : ISpecification<Entities.Booking>
             .Include(e => e.BookingGroup)
             .ThenInclude(e => e.BookingType)
             .Include(e => e.BookingType)
+            .Include(e => e.Event)
             .Include(e => e.BookingOptions.OrderByDescending(e => e.OptionId))
             .Where(e => e.Id == bookingId);
     }

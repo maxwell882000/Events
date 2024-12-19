@@ -21,25 +21,14 @@
         "FileOption__StoragePath": "media/",
         "PaymeOption__Login": "66f3df145c7c8f4eba0fea9a",
         "PaymeOption__Password": "@cxQbHdjPGiOBpnkyaffaq0QbiC1wCN5WBXH",
-        "HostOption__BaseUrl": "http://localhost:5196/"
-      }
-    },
-    "https": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:7124;http://localhost:5196",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "HostOption__BaseUrl": "http://localhost:5196/",
+        "TelegramOption__Webhook": "https://6b03-89-236-219-40.ngrok-free.app/api/v1/telegram",
+        "TelegramOption__Api": "8078849422:AAHdRQM9srWbQUJtDfTz8m8J9vffwvMimXE",
+        "MessageBrokers__RabbitMQ__Host": "localhost",
+        "MessageBrokers__RabbitMQ__Password": "w6quaebXPwEMkHAO",
+        "MessageBrokers__RabbitMQ__Port": "5672",
+        "MessageBrokers__RabbitMQ__Username": "user",
+        "MessageBrokers__RabbitMQ__VHost": "/"
       }
     }
   }

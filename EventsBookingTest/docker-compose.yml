@@ -20,6 +20,23 @@
     networks:
       - my-network
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: w6quaebXPwEMkHAO
+    ports:
+      - "15672:15672"  # Management UI port
+      - "5672:5672"    # AMQP port
+    networks:
+      - my-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.sportia.uz`)"
+      - "traefik.http.routers.rabbitmq.entrypoints=web"
+      - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
+
   postgres:
     image: postgres:13
     container_name: postgres
@@ -54,6 +71,13 @@
     environment:
       - Database__Postgresql__ConnectionString=Host=postgres;Port=5432;Username=postgres;Password=yourpassword;Database=events_booking;Pooling=true;
       - TZ=Asia/Tashkent
+      - TelegramOption__Webhook=${TELEGRAM_WEBHOOK}
+      - TelegramOption__Api=${TELEGRAM_API}
+      - MessageBrokers__RabbitMQ__Host=rabbitmq
+      - MessageBrokers__RabbitMQ__Password=w6quaebXPwEMkHAO
+      - MessageBrokers__RabbitMQ__Port=5672
+      - MessageBrokers__RabbitMQ__Username=user
+      - MessageBrokers__RabbitMQ__VHost=/
     depends_on:
       - postgres
     networks:
@@ -69,6 +93,13 @@
       - PaymeOption__MerchantId=${PAYME_LOGIN}
       - PaymeOption__Paycom=Paycom
       - PaymeOption__Password=${PAYME_PASSWORD}
+      - TelegramOption__Webhook=${TELEGRAM_WEBHOOK}
+      - TelegramOption__Api=${TELEGRAM_API}
+      - MessageBrokers__RabbitMQ__Host=rabbitmq
+      - MessageBrokers__RabbitMQ__Password=w6quaebXPwEMkHAO
+      - MessageBrokers__RabbitMQ__Port=5672
+      - MessageBrokers__RabbitMQ__Username=user
+      - MessageBrokers__RabbitMQ__VHost=/
       - HostOption__BaseUrl=https://api.sportia.uz/
       - TZ=Asia/Tashkent
     networks:
@@ -83,6 +114,7 @@
       - "traefik.http.services.eventsbookingbackend.loadbalancer.server.port=8080"  # Specify the internal port of the backend service
     depends_on:
       - postgres
+      - rabbitmq
 
 volumes:
   pgdata:

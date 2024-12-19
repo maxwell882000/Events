@@ -1,10 +1,13 @@
 using System.Transactions;
+using AutoMapper;
 using EventsBookingBackend.Domain.Booking.Entities;
+using EventsBookingBackend.Domain.Booking.Events;
 using EventsBookingBackend.Domain.Booking.Exceptions;
 using EventsBookingBackend.Domain.Booking.Repositories;
 using EventsBookingBackend.Domain.Booking.Specifications;
 using EventsBookingBackend.Domain.Booking.ValueObjects;
 using EventsBookingBackend.Domain.Common.Exceptions;
+using MassTransit;
 using Microsoft.OpenApi.Extensions;
 
 namespace EventsBookingBackend.Domain.Booking.Services;
@@ -13,7 +16,10 @@ public class BookDomainService(
     IBookingRepository bookingRepository,
     IBookingGroupRepository bookingGroupRepository,
     IBookingOptionRepository bookingOptionRepository,
-    IBookingLimitRepository bookingLimitRepository)
+    IBookingLimitRepository bookingLimitRepository,
+    IPublishEndpoint publishEndpoint,
+    IMapper mapper
+)
     : IBookingDomainService
 {
     public async Task<Entities.Booking> CreateBooking(Entities.Booking booking)
@@ -45,12 +51,12 @@ public class BookDomainService(
                 await bookingGroupRepository.Create(group);
             }
 
-            group.Bookings.Add(booking);
-            group.SetStatus(currentLimit);
-            booking.BookingGroupId = group.Id;
+            group.AddBooking(booking, currentLimit);
             await bookingGroupRepository.Update(group);
+            await publishEndpoint.Publish(mapper.Map<BookingCreatedEvent>(booking));
             transactionScope.Complete();
         }
+
 
         return (await bookingRepository.FindFirst(new GetBookingById(booking.Id)))!;
     }

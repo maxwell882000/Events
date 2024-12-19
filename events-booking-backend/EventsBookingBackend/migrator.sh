@@ -7,3 +7,4 @@ dotnet ef migrations add MigrateAll --context EventDbContext --output-dir ./Migr
 dotnet ef migrations add MigrateAll --context ReviewDbContext --output-dir ./Migrations/Review
 dotnet ef migrations add MigrateAll --context FileDbContext --output-dir ./Migrations/File
 dotnet ef migrations add MigrateAll --context PaymeDbContext --output-dir ./Migrations/Payme
+dotnet ef migrations add MigrateAll --context TelegramDbContext --output-dir ./Migrations/Telegram
