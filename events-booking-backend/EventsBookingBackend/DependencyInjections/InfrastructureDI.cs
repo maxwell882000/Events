@@ -121,36 +121,40 @@ public static class InfrastructureDi
             var services = scope.ServiceProvider;
 
             // Migrate UserDbContext
-            using var userContext = services.GetRequiredService<UserDbContext>();
-            userContext.Database.Migrate();
+            await using var userContext = services.GetRequiredService<UserDbContext>();
+            await userContext.Database.MigrateAsync();
 
             // Migrate ReviewDbContext
-            using var reviewContext = services.GetRequiredService<ReviewDbContext>();
-            reviewContext.Database.Migrate();
+            await using var reviewContext = services.GetRequiredService<ReviewDbContext>();
+            await reviewContext.Database.MigrateAsync();
 
             // Migrate EventDbContext
-            using var eventContext = services.GetRequiredService<EventDbContext>();
-            eventContext.Database.Migrate();
+            await using var eventContext = services.GetRequiredService<EventDbContext>();
+            await eventContext.Database.MigrateAsync();
 
             // Migrate CategoryDbContext
-            using var categoryContext = services.GetRequiredService<CategoryDbContext>();
-            categoryContext.Database.Migrate();
+            await using var categoryContext = services.GetRequiredService<CategoryDbContext>();
+            await categoryContext.Database.MigrateAsync();
 
             // Migrate BookingDbContext
-            using var bookingContext = services.GetRequiredService<BookingDbContext>();
-            bookingContext.Database.Migrate();
+            await using var bookingContext = services.GetRequiredService<BookingDbContext>();
+            await bookingContext.Database.MigrateAsync();
 
             // Migrate AuthDbContext
-            using var authContext = services.GetRequiredService<AuthDbContext>();
-            authContext.Database.Migrate();
+            await using var authContext = services.GetRequiredService<AuthDbContext>();
+            await authContext.Database.MigrateAsync();
 
             // Migrate FileDbContext
-            using var fileContext = services.GetRequiredService<FileDbContext>();
-            fileContext.Database.Migrate();
+            await using var fileContext = services.GetRequiredService<FileDbContext>();
+            await fileContext.Database.MigrateAsync();
 
             // Migrate PaymeDbContext
-            using var paymeContext = services.GetRequiredService<PaymeDbContext>();
-            paymeContext.Database.Migrate();
+            await using var paymeContext = services.GetRequiredService<PaymeDbContext>();
+            await paymeContext.Database.MigrateAsync();
+
+            // Migrate TelegramDbContext
+            await using var telegramContext = services.GetRequiredService<TelegramDbContext>();
+            await telegramContext.Database.MigrateAsync();
         }
     }
 
