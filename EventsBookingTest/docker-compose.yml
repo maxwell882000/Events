@@ -35,7 +35,7 @@
       - "traefik.enable=true"
       - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.sportia.uz`)"
       - "traefik.http.routers.rabbitmq.entrypoints=websecure"
-      - - "traefik.http.routers.rabbitmq.tls.certresolver=myresolver"
+      - "traefik.http.routers.rabbitmq.tls.certresolver=myresolver"
       - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
 
   postgres:
