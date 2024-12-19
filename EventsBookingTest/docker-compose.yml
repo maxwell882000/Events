@@ -26,15 +26,15 @@
     environment:
       RABBITMQ_DEFAULT_USER: user
       RABBITMQ_DEFAULT_PASS: w6quaebXPwEMkHAO
-    ports:
-      - "15672:15672"  # Management UI port
-      - "5672:5672"    # AMQP port
+    expose:
+      - "15672"  # Management UI port
+      - "5672"    # AMQP port
     networks:
       - my-network
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.sportia.uz`)"
-      - "traefik.http.routers.rabbitmq.entrypoints=websecure"
+      - "traefik.http.routers.rabbitmq.entrypoints=web,websecure"
       - "traefik.http.routers.rabbitmq.tls.certresolver=myresolver"
       - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
 
