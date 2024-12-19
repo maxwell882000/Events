@@ -20,13 +20,15 @@ jobs:
           VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
           PAYME_LOGIN: ${{ secrets.PAYME_LOGIN }}
           PAYME_PASSWORD: ${{ secrets.PAYME_PASSWORD }}
+          TELEGRAM_WEBHOOK: ${{ secrets.TELEGRAM_WEBHOOK }}
+          TELEGRAM_API: ${{ secrets.TELEGRAM_API }}
         run: |
           # Save the SSH private key to a temporary file
           echo "$VPS_SSH_KEY" > vps_key.pem
           chmod 600 vps_key.pem
           
           # Run the deployment script on the remote VPS
-          ssh -i vps_key.pem -o StrictHostKeyChecking=no $VPS_USER@$VPS_IP 'bash -s' <  ./deploy.sh "$PAYME_LOGIN" "$PAYME_PASSWORD"
+          ssh -i vps_key.pem -o StrictHostKeyChecking=no $VPS_USER@$VPS_IP 'bash -s' <  ./deploy.sh "$PAYME_LOGIN" "$PAYME_PASSWORD" "$TELEGRAM_WEBHOOK" "$TELEGRAM_API"
           
           # Remove the key file after use
           rm vps_key.pem
