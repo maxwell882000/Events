@@ -80,6 +80,8 @@
       - MessageBrokers__RabbitMQ__VHost=/
     depends_on:
       - postgres
+      - rabbitmq
+
     networks:
       - my-network
 
