@@ -26,11 +26,11 @@ var app = builder.Build();
 
 app.Services.UseScheduler(scheduler =>
 {
-    // scheduler.Schedule<AggregateReviewJob>()
-    //     .EveryFifteenSeconds()
-    //     .PreventOverlapping(nameof(AggregateReviewJob));
-    // scheduler.Schedule<BookingEventJob>()
-    //     .EveryFifteenSeconds()
-    //     .PreventOverlapping(nameof(BookingEventJob));
+    scheduler.Schedule<AggregateReviewJob>()
+        .EveryFifteenSeconds()
+        .PreventOverlapping(nameof(AggregateReviewJob));
+    scheduler.Schedule<BookingEventJob>()
+        .EveryFifteenSeconds()
+        .PreventOverlapping(nameof(BookingEventJob));
 });
 app.Run();
