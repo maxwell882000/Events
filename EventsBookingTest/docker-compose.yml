@@ -2,6 +2,7 @@
   traefik:
     image: traefik:v2.8
     container_name: traefik
+    restart: unless-stopped
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
@@ -23,6 +24,7 @@
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
+    restart: unless-stopped
     environment:
       RABBITMQ_DEFAULT_USER: user
       RABBITMQ_DEFAULT_PASS: w6quaebXPwEMkHAO
@@ -41,6 +43,7 @@
   postgres:
     image: postgres:13
     container_name: postgres
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: yourpassword
@@ -55,6 +58,7 @@
 
   eventsbookingseed:
     image: eventsbookingseed
+    restart: unless-stopped
     build:
       context: ../
       dockerfile: ./EventsBookingSeed/Dockerfile
@@ -66,6 +70,7 @@
       - my-network
 
   eventsbookingjob:
+    restart: unless-stopped
     build:
       context: ../
       dockerfile: ./EventsBookingJob/Dockerfile
@@ -87,6 +92,7 @@
       - my-network
 
   eventsbookingbackend:
+    restart: unless-stopped
     build:
       context: ./../events-booking-backend/EventsBookingBackend/
       dockerfile: Dockerfile
