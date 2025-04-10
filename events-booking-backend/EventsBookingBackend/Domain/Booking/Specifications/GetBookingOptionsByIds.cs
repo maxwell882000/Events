@@ -7,6 +7,7 @@ public class GetBookingOptionsByIds(IList<Guid> ids) : ISpecification<BookingOpt
 {
     public IQueryable<BookingOption> Apply(IQueryable<BookingOption> query)
     {
-        return query.Where(b => ids.Contains(b.Id));
+        return query
+            .Where(b => ids.Contains(b.Id));
     }
 }

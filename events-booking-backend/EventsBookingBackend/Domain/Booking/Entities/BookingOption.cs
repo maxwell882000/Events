@@ -17,4 +17,6 @@ public class BookingOption : BaseEntity
     }
 
     public BookingType BookingType { get; set; }
+
+    public Guid BookingTypeId { get; set; }
 }

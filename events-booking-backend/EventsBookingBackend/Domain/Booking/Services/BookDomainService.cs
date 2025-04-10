@@ -74,13 +74,17 @@ public class BookDomainService(
                 bookingOptionRepository.FindAll(
                     new GetBookingOptionsByIds(booking.BookingOptions.Select(e => e.OptionId).ToList())))
             .ToDictionary(e => e.Id);
-        foreach (var bookingOption in booking.BookingOptions)
+        foreach (var bookingOption in booking.BookingOptions.ToList())
         {
-            if (options.TryGetValue(bookingOption.OptionId, out var option))
+            if (!options.TryGetValue(bookingOption.OptionId, out var option) ||
+                option.BookingTypeId != booking.BookingTypeId)
             {
-                bookingOption.Option = option;
-                bookingOption.ValidateValue();
+                booking.BookingOptions.Remove(bookingOption);
+                continue;
             }
+
+            bookingOption.Option = option;
+            bookingOption.ValidateValue();
         }
     }
 

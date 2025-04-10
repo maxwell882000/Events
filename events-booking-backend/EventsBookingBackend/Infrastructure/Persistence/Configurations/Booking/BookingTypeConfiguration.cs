@@ -10,7 +10,8 @@ public class BookingTypeConfiguration : BaseEntityConfiguration<BookingType>
     {
         base.Configure(builder);
         builder.HasMany(e => e.BookingOptions)
-            .WithOne(e => e.BookingType);
+            .WithOne(e => e.BookingType)
+            .HasForeignKey(e => e.BookingTypeId);
         builder.OwnsOne(e => e.Icon).WithOwner();
         builder.HasIndex(e => new { e.CategoryId, e.EventId, e.Order }).IsUnique();
     }

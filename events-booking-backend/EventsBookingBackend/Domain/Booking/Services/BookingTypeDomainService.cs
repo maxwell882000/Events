@@ -14,7 +14,7 @@ public class BookingTypeDomainService(IBookingTypeRepository bookingTypeReposito
             var bookingTypeByEvent = await
                 bookingTypeRepository.FindAll(new GetBookingTypeByEvent(eventId.Value));
 
-            if (bookingTypeByEvent.Count > 0)
+            if (bookingTypeByEvent.Any())
                 return bookingTypeByEvent;
         }
 
