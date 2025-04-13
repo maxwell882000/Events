@@ -24,6 +24,6 @@ public class PhoneAttribute : ValidationAttribute
 
         var pattern = @"^\+998\d{9}$";
 
-        return Regex.IsMatch(value.ToString(), pattern);
+        return Regex.IsMatch(value.ToString()!.Replace(" ", ""), pattern);
     }
 }

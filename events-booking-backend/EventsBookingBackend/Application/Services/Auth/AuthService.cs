@@ -21,6 +21,7 @@ public class AuthService(
 {
     public async Task<ClaimsPrincipal> Login(AuthLoginRequest request)
     {
+        request.Phone = request.Phone?.Replace(" ", "");
         var result = await signInManager.PasswordSignInAsync(request.Phone!, request.Password!, false, false);
 
         if (result.Succeeded)

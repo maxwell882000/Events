@@ -8,7 +8,7 @@ public class CreateBookingRequest
     [Required] public Guid? EventId { get; set; }
     [Required] public Guid? BookingTypeId { get; set; }
     [Required] public List<BookingUserOptionDto>? BookingOptions { get; set; }
-    [Required] public PaymentOption? Payment { get; set; }
+    public PaymentOption? Payment { get; set; } = PaymentOption.PAYME;
 
     public enum PaymentOption
     {

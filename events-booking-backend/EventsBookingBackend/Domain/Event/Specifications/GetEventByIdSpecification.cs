@@ -10,6 +10,7 @@ public class GetEventByIdSpecification(Guid id, Guid? userId = null) : ISpecific
         return query
             .Include(e => e.LikedEvents.Where(l => l.UserId == userId))
             .Include(e => e.AggregatedReviews)
-            .Where(e => e.Id == id);
+            .Where(e => e.Id == id)
+            .AsSplitQuery();;
     }
 }

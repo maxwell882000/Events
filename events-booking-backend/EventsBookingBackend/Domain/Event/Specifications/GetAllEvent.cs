@@ -9,6 +9,7 @@ public class GetAllEventsSpecification(Guid? userId) : ISpecification<Entities.E
     {
         return query
             .Include(e => e.LikedEvents.Where(l => l.UserId == userId))
-            .Include(e => e.AggregatedReviews);
+            .Include(e => e.AggregatedReviews)
+            .AsSplitQuery();
     }
 }

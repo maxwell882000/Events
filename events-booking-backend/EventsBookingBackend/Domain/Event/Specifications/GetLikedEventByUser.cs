@@ -12,6 +12,7 @@ public class GetLikedEventByUser(Guid userId) : ISpecification<LikedEvent>
             .Include(e => e.Event)
             .ThenInclude(e => e.AggregatedReviews)
             .Where(e => e.UserId == userId)
-            .OrderByDescending(e => e.CreatedAt);
+            .OrderByDescending(e => e.CreatedAt)
+            .AsSplitQuery();
     }
 }

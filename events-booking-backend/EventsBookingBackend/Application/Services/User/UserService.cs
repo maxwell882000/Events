@@ -67,7 +67,7 @@ public class UserService(
         if (request.Name != null)
             currentUser.Name = request.Name;
 
-        if (request.Password != null)
+        if (!string.IsNullOrEmpty(request.Password))
         {
             var auth = await userManager.GetUserAsync(httpContextAccessor.HttpContext!.User);
             if (request.Password != request.RepeatPassword)

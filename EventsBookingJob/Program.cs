@@ -5,8 +5,7 @@ using EventsBookingBackend.Infrastructure.Notification.Telegram.Extensions;
 using EventsBookingJob.Consumers.Notification;
 using EventsBookingJob.Job.Booking;
 using EventsBookingJob.Job.Event;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
