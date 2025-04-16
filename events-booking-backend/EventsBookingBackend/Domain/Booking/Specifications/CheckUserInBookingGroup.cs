@@ -11,6 +11,7 @@ public class CheckUserInBookingGroup(Guid eventId, Guid userId, Guid bookingType
     public IQueryable<BookingGroup> Apply(IQueryable<BookingGroup> query)
     {
         return query.Include(e => e.Bookings)
+            .ThenInclude(e => e.BookingType)
             .Where(e => e.Bookings.Any(b => b.UserId == userId)
                         && e.EventId == eventId
                         && e.BookingTypeId == bookingTypeId

@@ -27,13 +27,6 @@ public class BookDomainService(
         await ValidateBookingOptionsValue(booking);
         var currentLimit = await GetBookingLimit(booking);
 
-        var isSameBookingWithUser = await CheckSameBookingWithUser(booking);
-
-        if (isSameBookingWithUser)
-        {
-            throw new DomainRuleException("Вы уже забранировали !");
-        }
-
         var bookingCount = await GetBookingGroup(booking);
 
         if (bookingCount?.IsMaxLimitReached(currentLimit) == true)
@@ -41,10 +34,21 @@ public class BookDomainService(
             throw new DomainRuleException("Количество забранированных мест достигло лимита !");
         }
 
+        var group = await GetExistingBookingGroup(booking);
+
+        if (group != null)
+        {
+            var existingBooking = group.Bookings.First(e => e.UserId == booking.UserId);
+            existingBooking.Rebook();
+            await bookingRepository.Update(existingBooking);
+            return existingBooking;
+        }
+
+
         using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
         {
             await bookingRepository.Create(booking);
-            BookingGroup? group = await GetBookingGroup(booking);
+            group = await GetBookingGroup(booking);
             if (group == null)
             {
                 group = BookingGroup.FromBooking(booking);
@@ -88,14 +92,14 @@ public class BookDomainService(
         }
     }
 
-    public async Task<bool> CheckSameBookingWithUser(Entities.Booking booking)
+    private async Task<BookingGroup?> GetExistingBookingGroup(Entities.Booking booking)
     {
         var group = await bookingGroupRepository.FindFirst(new CheckUserInBookingGroup(
             booking.EventId,
             booking.UserId,
             booking.BookingTypeId,
             booking.HashOptions()));
-        return group != null;
+        return group;
     }
 
     public async Task<int> SameBookingsCount(Entities.Booking booking)

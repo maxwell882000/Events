@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using EventsBookingBackend.Domain.Booking.ValueObjects;
 using EventsBookingBackend.Domain.Common.Entities;
+using EventsBookingBackend.Domain.Common.Exceptions;
 using Newtonsoft.Json;
 
 namespace EventsBookingBackend.Domain.Booking.Entities;
@@ -52,6 +53,13 @@ public class Booking : BaseEntity
             // Convert the hash to a string (optional)
             return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
         }
+    }
+
+    public void Rebook()
+    {
+        if (Status != BookingStatus.Canceled)
+            throw new DomainRuleException("Вы уже забранировали !");
+        Status = BookingStatus.Waiting;
     }
 
     public void CancelBooking()
