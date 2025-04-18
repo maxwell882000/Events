@@ -41,6 +41,7 @@ public class BookDomainService(
             var existingBooking = group.Bookings.First(e => e.UserId == booking.UserId);
             existingBooking.Rebook();
             await bookingRepository.Update(existingBooking);
+            await publishEndpoint.Publish(mapper.Map<BookingCreatedEvent>(booking));
             return existingBooking;
         }
 

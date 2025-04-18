@@ -17,6 +17,7 @@ public class GetUserBookedEvents(Guid userId) : ISpecification<Entities.Booking>
             .Include(e => e.BookingGroup)
             .Where(b => b.UserId == userId)
             .OrderByDescending(e => e.CreatedAt)
+            .AsSplitQuery()
             .AsNoTracking();
     }
 }
