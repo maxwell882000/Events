@@ -31,7 +31,7 @@ builder.Services.AddCors(options =>
         {
             builder
                 .SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost" ||
-                                              origin.Contains("sportia.uz"))
+                                              origin.Contains("teams-up.uz"))
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();

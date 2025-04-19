@@ -35,7 +35,7 @@
       - my-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.sportia.uz`)"
+      - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.teams-up.uz`)"
       - "traefik.http.routers.rabbitmq.entrypoints=web,websecure"
       - "traefik.http.routers.rabbitmq.tls.certresolver=myresolver"
       - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
@@ -109,7 +109,7 @@
       - MessageBrokers__RabbitMQ__Port=5672
       - MessageBrokers__RabbitMQ__Username=user
       - MessageBrokers__RabbitMQ__VHost=/
-      - HostOption__BaseUrl=https://api.sportia.uz/
+      - HostOption__BaseUrl=https://api.teams-up.uz/
       - TZ=Asia/Tashkent
     networks:
       - my-network
@@ -117,7 +117,7 @@
       - ./../events-booking-backend/EventsBookingBackend/wwwroot:/app/wwwroot
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.eventsbookingbackend.rule=Host(`api.sportia.uz`)"
+      - "traefik.http.routers.eventsbookingbackend.rule=Host(`api.teams-up.uz`)"
       - "traefik.http.routers.eventsbookingbackend.entrypoints=websecure"
       - "traefik.http.routers.eventsbookingbackend.tls.certresolver=myresolver"  # Use the ACME resolver
       - "traefik.http.services.eventsbookingbackend.loadbalancer.server.port=8080"  # Specify the internal port of the backend service
