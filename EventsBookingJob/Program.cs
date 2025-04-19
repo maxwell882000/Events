@@ -1,6 +1,5 @@
 using Coravel;
 using EventsBookingBackend.DependencyInjections;
-using EventsBookingBackend.Domain.Booking.Events;
 using EventsBookingBackend.Infrastructure.Notification.Telegram.Extensions;
 using EventsBookingJob.Consumers.Notification;
 using EventsBookingJob.Job.Booking;
